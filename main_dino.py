@@ -353,7 +353,7 @@ def train_dino(args):
     )
     print(f"Data loaded: there are {len(dataset)} images.")
 
-    # test_opt_num_workers(dataset, args.batch_size_per_gpu)
+    test_opt_num_workers(dataset, args.batch_size_per_gpu)
 
     # ============ building student and teacher networks ... ============
     # we changed the name DeiT-S for ViT-S to avoid confusions

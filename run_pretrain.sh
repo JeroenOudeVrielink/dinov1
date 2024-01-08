@@ -13,5 +13,5 @@ python main_dino.py \
 --batch_size_per_gpu 128 \
 --num_workers 4 \
 --wandb_log_freq 100 \
---epochs 100
+--epochs 10
 
