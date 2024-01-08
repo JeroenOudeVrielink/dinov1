@@ -340,7 +340,7 @@ def train_dino(args):
     )
     # dataset = datasets.ImageFolder(args.data_path, transform=transform)
     dataset = AIMLDataset(
-        "annotations/img_paths_mini.csv", args.data_path, transform=transform
+        "annotations/img_paths.csv", args.data_path, transform=transform
     )
     sampler = torch.utils.data.DistributedSampler(dataset, shuffle=True)
     data_loader = torch.utils.data.DataLoader(
