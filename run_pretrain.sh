@@ -12,7 +12,7 @@ python main_dino.py \
 --global_crops_scale 0.14 1 \
 --local_crops_scale 0.05 0.14 \
 --batch_size_per_gpu 128 \
---num_workers 10 \
+--num_workers 14 \
 --wandb_log_freq 100 \
 --saveckp_freq 10 \
 --epochs 400
