@@ -11,9 +11,8 @@ class AIMLDataset(Dataset):
         data_path: str,
         transform=None,
     ):
-        self.img_paths_labels = pd.read_pickle(
-            os.path.join(data_path, annotations_file)
-        )
+        self.img_paths_labels = pd.read_csv(
+            os.path.join(data_path, annotations_file))
         self.data_path = data_path
         self.transform = transform
 
@@ -21,10 +20,10 @@ class AIMLDataset(Dataset):
         return len(self.img_paths_labels)
 
     def __getitem__(self, idx):
-        img_path = os.path.join(self.data_path, self.img_paths_labels.iloc[idx, 0])
+        img_path = os.path.join(self.data_path, self.img_paths_labels.iloc[idx, -1])
         image = Image.open(img_path)
 
         if self.transform:
             image = self.transform(image)
 
-        return image
+        return image, 0

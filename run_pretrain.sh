@@ -1,5 +1,8 @@
 
-python -m torch.distributed.launch --nproc_per_node=1 main_dino.py \
+python main_dino.py \
+--exp_name dino_debug \
+--output_dir ~/data/dinov1_models \
+--data_path ~/AIML_rot_corrected \
 --arch resnet50 \
 --optimizer sgd \
 --lr 0.03 \
@@ -7,6 +10,8 @@ python -m torch.distributed.launch --nproc_per_node=1 main_dino.py \
 --weight_decay_end 1e-4 \
 --global_crops_scale 0.14 1 \
 --local_crops_scale 0.05 0.14 \
---data_path /mnt/sdb1/Data_remote/AIML_rot_corrected \
---output_dir debug_output \
---batch_size_per_gpu 4
+--batch_size_per_gpu 128 \
+--num_workers 4 \
+--wandb_log_freq 100 \
+--epochs 2
+

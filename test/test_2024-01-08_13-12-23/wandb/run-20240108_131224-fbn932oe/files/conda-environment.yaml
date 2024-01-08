@@ -1,0 +1,4 @@
+name: dino_new
+channels:
+  - defaults
+prefix: /home/jvrielink/anaconda3/envs/dino_new

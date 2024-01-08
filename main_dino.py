@@ -35,6 +35,42 @@ import vision_transformer as vits
 from vision_transformer import DINOHead
 
 from aiml_dataset import AIMLDataset
+import wandb
+
+def init_wandb(args):
+    run_name = f"{args.exp_name}_{args.date_time}"
+
+    # Create wandb logger
+    wandb.init(
+        name=run_name,
+        project="AIML-SSL",
+        entity="jeroenov98",
+        config=args,
+        dir=args.output_dir,
+    )
+
+
+def test_opt_num_workers(dataset, batch_size):
+    from time import time
+    import multiprocessing as mp
+    from torch.utils.data import DataLoader
+
+    for num_workers in range(2, mp.cpu_count(), 2):
+        train_loader = DataLoader(
+            dataset,
+            shuffle=True,
+            num_workers=num_workers,
+            batch_size=batch_size,
+            pin_memory=True,
+        )
+        start = time()
+        for i, data in enumerate(train_loader, 0):
+            pass
+            if i == 10:
+                break
+        end = time()
+        print("Finish with:{} second, num_workers={}".format(end - start, num_workers))
+
 
 torchvision_archs = sorted(
     name
@@ -264,10 +300,30 @@ def get_args_parser():
         type=int,
         help="Please ignore and do not set this argument.",
     )
+    parser.add_argument(
+        "--exp_name",
+        default="debug",
+        type=str,
+        help="Name of the experiment",
+    )
+    parser.add_argument(
+        "--date_time",
+        default="",
+        type=str,
+        help="Date and time of the experiment",
+    )
+    parser.add_argument(
+        "--wandb_log_freq",
+        default=100,
+        type=int,
+        help="Frequency of logging to wandb",
+    )
     return parser
 
 
 def train_dino(args):
+    init_wandb(args)
+
     utils.init_distributed_mode(args)
     utils.fix_random_seeds(args.seed)
     print("git:\n  {}\n".format(utils.get_sha()))
@@ -284,7 +340,7 @@ def train_dino(args):
     )
     # dataset = datasets.ImageFolder(args.data_path, transform=transform)
     dataset = AIMLDataset(
-        "annotations/img_paths.pkl", args.data_path, transform=transform
+        "annotations/img_paths_mini.csv", args.data_path, transform=transform
     )
     sampler = torch.utils.data.DistributedSampler(dataset, shuffle=True)
     data_loader = torch.utils.data.DataLoader(
@@ -296,6 +352,8 @@ def train_dino(args):
         drop_last=True,
     )
     print(f"Data loaded: there are {len(dataset)} images.")
+
+    # test_opt_num_workers(dataset, args.batch_size_per_gpu)
 
     # ============ building student and teacher networks ... ============
     # we changed the name DeiT-S for ViT-S to avoid confusions
@@ -428,6 +486,7 @@ def train_dino(args):
     print("Starting DINO training !")
     for epoch in range(start_epoch, args.epochs):
         data_loader.sampler.set_epoch(epoch)
+        wandb.log({"epoch": epoch})
 
         # ============ training one epoch of DINO ... ============
         train_stats = train_one_epoch(
@@ -544,6 +603,14 @@ def train_one_epoch(
         metric_logger.update(loss=loss.item())
         metric_logger.update(lr=optimizer.param_groups[0]["lr"])
         metric_logger.update(wd=optimizer.param_groups[0]["weight_decay"])
+        if it % args.wandb_log_freq == 0:
+            wandb.log(
+                {
+                    "loss": loss.item(),
+                    "lr": optimizer.param_groups[0]["lr"],
+                    "wd": optimizer.param_groups[0]["weight_decay"],
+                }
+            )
     # gather the stats from all processes
     metric_logger.synchronize_between_processes()
     print("Averaged stats:", metric_logger)
@@ -637,8 +704,9 @@ class DataAugmentationDINO(object):
         )
         normalize = transforms.Compose(
             [
+                transforms.Grayscale(num_output_channels=3),
                 transforms.ToTensor(),
-                transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225)),
+                # transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225)),
             ]
         )
 
@@ -690,5 +758,7 @@ class DataAugmentationDINO(object):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser("DINO", parents=[get_args_parser()])
     args = parser.parse_args()
+    args.date_time = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    args.output_dir = os.path.join(args.output_dir, args.exp_name + "_" + args.date_time)
     Path(args.output_dir).mkdir(parents=True, exist_ok=True)
     train_dino(args)

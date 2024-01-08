@@ -1,0 +1,42 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "dino",
+            "type": "python",
+            "request": "launch",
+            "program": "main_dino.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "--arch",
+                "resnet50",
+                "--optimizer",
+                "sgd",
+                "--lr",
+                "0.03",
+                "--weight_decay",
+                "1e-4",
+                "--weight_decay_end",
+                "1e-4",
+                "--global_crops_scale",
+                "0.14",
+                "1",
+                "--local_crops_scale",
+                "0.05",
+                "0.14",
+                "--data_path",
+                "/mnt/sdb1/Data_remote/AIML_rot_corrected",
+                "--output_dir",
+                "debug_output",
+                "--batch_size_per_gpu",
+                "4",
+                "--num_workers",
+                "4"
+            ]
+        }
+    ]
+}
