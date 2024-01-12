@@ -38,7 +38,7 @@ from aiml_dataset import AIMLDataset
 import wandb
 
 def init_wandb(args):
-    run_name = f"{args.exp_name}_{args.date_time}"
+    run_name = os.path.basename(os.path.normpath(args.output_dir))
 
     # Create wandb logger
     wandb.init(
