@@ -318,6 +318,12 @@ def get_args_parser():
         type=int,
         help="Frequency of logging to wandb",
     )
+    parser.add_argument(
+        "--from_ckpt",
+        default=False,
+        type=bool,
+        help="Whether to start from a checkpoint",
+    )
     return parser
 
 
@@ -758,7 +764,8 @@ class DataAugmentationDINO(object):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser("DINO", parents=[get_args_parser()])
     args = parser.parse_args()
-    args.date_time = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    args.output_dir = os.path.join(args.output_dir, args.exp_name + "_" + args.date_time)
-    Path(args.output_dir).mkdir(parents=True, exist_ok=True)
+    if args.from_ckpt is False:
+        args.date_time = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        args.output_dir = os.path.join(args.output_dir, args.exp_name + "_" + args.date_time)
+        Path(args.output_dir).mkdir(parents=True, exist_ok=True)
     train_dino(args)

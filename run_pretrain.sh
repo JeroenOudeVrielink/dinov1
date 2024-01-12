@@ -2,7 +2,8 @@
 
 python main_dino.py \
 --exp_name dinov1_base_params_bs128_ep400 \
---output_dir ~/data/dinov1_models \
+--output_dir ~/data/dinov1_models/dinov1_base_params_bs128_ep400_2024-01-09_09-31-49 \
+--from_ckpt True \
 --data_path ~/AIML_rot_corrected \
 --arch resnet50 \
 --optimizer sgd \
