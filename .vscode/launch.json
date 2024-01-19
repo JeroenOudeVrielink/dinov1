@@ -33,9 +33,13 @@
                 "--output_dir",
                 "debug_output",
                 "--batch_size_per_gpu",
-                "4",
+                "2",
                 "--num_workers",
-                "4"
+                "4",
+                "--global_crop_size",
+                "448",
+                "--local_crop_size",
+                "192",
             ]
         }
     ]

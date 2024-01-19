@@ -37,6 +37,7 @@ from vision_transformer import DINOHead
 from aiml_dataset import AIMLDataset
 import wandb
 
+
 def init_wandb(args):
     run_name = os.path.basename(os.path.normpath(args.output_dir))
 
@@ -324,6 +325,18 @@ def get_args_parser():
         type=bool,
         help="Whether to start from a checkpoint",
     )
+    parser.add_argument(
+        "--global_crop_size",
+        default=224,
+        type=int,
+        help="Size of global crop",
+    )
+    parser.add_argument(
+        "--local_crop_size",
+        default=96,
+        type=int,
+        help="Size of local crop",
+    )
     return parser
 
 
@@ -343,6 +356,8 @@ def train_dino(args):
         args.global_crops_scale,
         args.local_crops_scale,
         args.local_crops_number,
+        args.global_crop_size,
+        args.local_crop_size,
     )
     # dataset = datasets.ImageFolder(args.data_path, transform=transform)
     dataset = AIMLDataset(
@@ -693,7 +708,14 @@ class DINOLoss(nn.Module):
 
 
 class DataAugmentationDINO(object):
-    def __init__(self, global_crops_scale, local_crops_scale, local_crops_number):
+    def __init__(
+        self,
+        global_crops_scale,
+        local_crops_scale,
+        local_crops_number,
+        global_crop_size=224,
+        local_crop_size=96,
+    ):
         flip_and_color_jitter = transforms.Compose(
             [
                 transforms.RandomHorizontalFlip(p=0.5),
@@ -720,7 +742,9 @@ class DataAugmentationDINO(object):
         self.global_transfo1 = transforms.Compose(
             [
                 transforms.RandomResizedCrop(
-                    224, scale=global_crops_scale, interpolation=Image.BICUBIC
+                    global_crop_size,
+                    scale=global_crops_scale,
+                    interpolation=Image.BICUBIC,
                 ),
                 flip_and_color_jitter,
                 utils.GaussianBlur(1.0),
@@ -731,7 +755,9 @@ class DataAugmentationDINO(object):
         self.global_transfo2 = transforms.Compose(
             [
                 transforms.RandomResizedCrop(
-                    224, scale=global_crops_scale, interpolation=Image.BICUBIC
+                    global_crop_size,
+                    scale=global_crops_scale,
+                    interpolation=Image.BICUBIC,
                 ),
                 flip_and_color_jitter,
                 utils.GaussianBlur(0.1),
@@ -744,7 +770,9 @@ class DataAugmentationDINO(object):
         self.local_transfo = transforms.Compose(
             [
                 transforms.RandomResizedCrop(
-                    96, scale=local_crops_scale, interpolation=Image.BICUBIC
+                    local_crop_size,
+                    scale=local_crops_scale,
+                    interpolation=Image.BICUBIC,
                 ),
                 flip_and_color_jitter,
                 utils.GaussianBlur(p=0.5),
@@ -766,6 +794,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
     if args.from_ckpt is False:
         args.date_time = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-        args.output_dir = os.path.join(args.output_dir, args.exp_name + "_" + args.date_time)
+        args.output_dir = os.path.join(
+            args.output_dir, args.exp_name + "_" + args.date_time
+        )
         Path(args.output_dir).mkdir(parents=True, exist_ok=True)
     train_dino(args)

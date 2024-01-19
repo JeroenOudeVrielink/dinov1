@@ -1,10 +1,9 @@
 # Num workers was 14 (optimal) but caused OOM errors for RAM on ws7
 
 python main_dino.py \
---exp_name dinov1_base_params_bs128_ep400 \
---output_dir ~/data/dinov1_models/dinov1_base_params_bs128_ep400_2024-01-09_09-31-49 \
---from_ckpt True \
---data_path ~/AIML_rot_corrected \
+--exp_name test \
+--output_dir /dinov1_models \
+--data_path /jvrielink/AIML_rot_corrected \
 --arch resnet50 \
 --optimizer sgd \
 --lr 0.03 \
@@ -16,5 +15,7 @@ python main_dino.py \
 --num_workers 10 \
 --wandb_log_freq 100 \
 --saveckp_freq 10 \
---epochs 400
+--epochs 400 \
+--global_crop 448 \
+--local_crop 192
 
