@@ -7,4 +7,4 @@ docker run \
 --mount type=bind,src=/home/jvrielink,target=/jvrielink \
 --mount type=bind,src=/home/jvrielink/data/dinov1_models,target=/dinov1_models \
 --shm-size 64G \
-jvrielink/pytorch_dino
+jvrielink/pytorch_dinov1
