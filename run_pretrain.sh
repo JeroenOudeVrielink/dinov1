@@ -16,6 +16,6 @@ python main_dino.py \
 --wandb_log_freq 100 \
 --saveckp_freq 10 \
 --epochs 400 \
---global_crop_size 448 \
---local_crop_size 192
+--global_crop_size 512 \
+--local_crop_size 224
 
