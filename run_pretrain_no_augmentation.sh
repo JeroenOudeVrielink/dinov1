@@ -3,7 +3,7 @@
 # Num workers was 14 (optimal) but caused OOM errors for RAM on ws7
 
 python main_dino.py \
---exp_name test_no_augmentation \
+--exp_name dinov1_bs128_ep300_no_augmentation \
 --output_dir /home/jvrielink/data/dinov1_models \
 --data_path /home/jvrielink/AIML_rot_corrected \
 --arch resnet50 \

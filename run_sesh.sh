@@ -9,7 +9,11 @@ pause 30s
 
 pause 30s
 
-./run_pretrain_no_multi_crop_no_local_to_global.sh
+./run_pretrain_no_local_to_global.sh
+
+pause 30s
+
+./run_pretrain_no_local_to_global_no_multicrop.sh
 
 pause 30s
 
