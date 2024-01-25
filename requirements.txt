@@ -4,3 +4,4 @@ numpy
 pandas
 timm
 wandb
+opencv-python

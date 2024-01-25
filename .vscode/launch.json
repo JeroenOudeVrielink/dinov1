@@ -36,10 +36,10 @@
                 "2",
                 "--num_workers",
                 "4",
-                "--global_crop_size",
-                "448",
-                "--local_crop_size",
-                "192",
+                "--use_dino_augmentation",
+                "0",
+                "--use_edge_preserving_filter",
+                "1",
             ]
         }
     ]

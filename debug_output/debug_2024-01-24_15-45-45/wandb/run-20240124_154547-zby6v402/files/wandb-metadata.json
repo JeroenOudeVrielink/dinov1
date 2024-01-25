@@ -1,0 +1,95 @@
+{
+    "os": "Linux-6.5.0-14-generic-x86_64-with-glibc2.35",
+    "python": "3.11.7",
+    "heartbeatAt": "2024-01-24T05:15:48.475287",
+    "startedAt": "2024-01-24T05:15:47.593606",
+    "docker": null,
+    "cuda": null,
+    "args": [
+        "--arch",
+        "resnet50",
+        "--optimizer",
+        "sgd",
+        "--lr",
+        "0.03",
+        "--weight_decay",
+        "1e-4",
+        "--weight_decay_end",
+        "1e-4",
+        "--global_crops_scale",
+        "0.14",
+        "1",
+        "--local_crops_scale",
+        "0.05",
+        "0.14",
+        "--data_path",
+        "/mnt/sdb1/Data_remote/AIML_rot_corrected",
+        "--output_dir",
+        "debug_output",
+        "--batch_size_per_gpu",
+        "2",
+        "--num_workers",
+        "4",
+        "--use_dino_augmentation",
+        "0"
+    ],
+    "state": "running",
+    "program": "main_dino.py",
+    "codePathLocal": "main_dino.py",
+    "codePath": "main_dino.py",
+    "git": {
+        "remote": "git@github.com:JeroenOudeVrielink/dinov1.git",
+        "commit": "d9f448c714adc6378e82ec8295b4b4c7c6f5b23e"
+    },
+    "email": "jeroenov98@gmail.com",
+    "root": "/home/jvrielink/Thesis/dinov1",
+    "host": "zliao-workstation2",
+    "username": "jvrielink",
+    "executable": "/home/jvrielink/anaconda3/envs/spark/bin/python",
+    "cpu_count": 4,
+    "cpu_count_logical": 4,
+    "cpu_freq": {
+        "current": 3.65675,
+        "min": 800.0,
+        "max": 3900.0
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 3.616,
+            "min": 800.0,
+            "max": 3900.0
+        },
+        {
+            "current": 3.623,
+            "min": 800.0,
+            "max": 3900.0
+        },
+        {
+            "current": 3.603,
+            "min": 800.0,
+            "max": 3900.0
+        },
+        {
+            "current": 3.607,
+            "min": 800.0,
+            "max": 3900.0
+        }
+    ],
+    "disk": {
+        "/": {
+            "total": 108.98062515258789,
+            "used": 93.83375549316406
+        }
+    },
+    "gpu": "NVIDIA GeForce GTX TITAN X",
+    "gpu_count": 1,
+    "gpu_devices": [
+        {
+            "name": "NVIDIA GeForce GTX TITAN X",
+            "memory_total": 12884901888
+        }
+    ],
+    "memory": {
+        "total": 31.29015350341797
+    }
+}
