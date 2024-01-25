@@ -13,11 +13,10 @@ python main_dino.py \
 --weight_decay 1e-4 \
 --weight_decay_end 1e-4 \
 --global_crops_scale 0.14 1 \
---local_crops_scale 0.05 0.14 \
 --batch_size_per_gpu 128 \
 --num_workers 10 \
 --wandb_log_freq 100 \
 --saveckp_freq 10 \
 --epochs 301 \
---local_crops_number 1
+--local_crops_number 0
 
