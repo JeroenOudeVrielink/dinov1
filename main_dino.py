@@ -845,5 +845,5 @@ if __name__ == "__main__":
         args.output_dir = os.path.join(
             args.output_dir, args.exp_name + "_" + args.date_time
         )
-        Path(args.output_dir).mkdir(parents=True, exist_ok=True)
+        Path(args.output_dir).mkdir(parents=False, exist_ok=True)
     train_dino(args)
