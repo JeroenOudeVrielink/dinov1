@@ -17,6 +17,6 @@ python main_dino.py \
 --saveckp_freq 10 \
 --epochs 301 \
 --use_dino_augmentation 0 \
-use_edge_preserving_filter 1
+--use_edge_preserving_filter 1
 
 
