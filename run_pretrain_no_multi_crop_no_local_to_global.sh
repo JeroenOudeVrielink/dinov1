@@ -16,7 +16,7 @@ python main_dino.py \
 --wandb_log_freq 100 \
 --saveckp_freq 10 \
 --epochs 301 \
---local_crops_number 2 \
+--local_crops_number 1 \
 --local_crop_size 224
 
 
