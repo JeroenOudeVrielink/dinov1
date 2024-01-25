@@ -1,4 +1,7 @@
+#!/usr/bin/env bash
+
 # Num workers was 14 (optimal) but caused OOM errors for RAM on ws7
+
 
 python main_dino.py \
 --exp_name test_no_multi_crop \
