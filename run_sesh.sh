@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 
 
-./run_pretrain_no_augmentation.sh
+# ./run_pretrain_no_augmentation.sh
 
-pause 30s
+# pause 30s
 
-./run_pretrain_no_multi_crop.sh
+# ./run_pretrain_no_multi_crop.sh
 
-pause 30s
+# pause 30s
 
 ./run_pretrain_no_local_to_global.sh
 

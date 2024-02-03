@@ -4,7 +4,7 @@
 
 python main_dino.py \
 --exp_name dinov1_bs128_ep300_no_local_to_global \
---output_dir /home/jvrielink/data/dinov1_models \
+--output_dir /home/jvrielink/data/dinov1_models/dinov1_bs128_ep300_no_local_to_global_2024-02-01_10-16-32 \
 --data_path /home/jvrielink/AIML_rot_corrected \
 --arch resnet50 \
 --optimizer sgd \
@@ -17,6 +17,7 @@ python main_dino.py \
 --num_workers 10 \
 --wandb_log_freq 100 \
 --saveckp_freq 10 \
---epochs 301
+--epochs 301 \
+--from_ckpt True
 
 
