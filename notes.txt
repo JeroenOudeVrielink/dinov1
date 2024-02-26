@@ -1,0 +1,3 @@
+rsync -r dinov1_bs128_ep300_no_augmentation_2024-01-25_14-59-55 zhibin@10.90.184.232:~/data/dinov1_models
+
+rsync -r dinov1_bs128_ep300_no_multi_crop_2024-01-29_10-13-00 zhibin@10.90.184.232:~/data/dinov1_models
