@@ -3,7 +3,7 @@
 # Num workers was 14 (optimal) but caused OOM errors for RAM on ws7
 
 python main_dino.py \
---exp_name dinov1_bs128_conv_head \
+--exp_name dinov1_bs128_conv_head_v2 \
 --output_dir ~/data/dinov1_models \
 --data_path ~/AIML_rot_corrected \
 --arch resnet50 \
