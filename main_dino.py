@@ -32,7 +32,7 @@ from torchvision import models as torchvision_models
 
 import utils
 import vision_transformer as vits
-from vision_transformer import DINOHead
+from vision_transformer import DINOHead, DINOHeadConvTranspose
 
 from aiml_dataset import AIMLDataset
 import wandb
@@ -351,6 +351,12 @@ def get_args_parser():
         type=int,
         help="Whether to use the edge preserving filter",
     )
+    parser.add_argument(
+        "--use_conv_head",
+        default=0,
+        type=int,
+        help="Whether to use a convolutional head",
+    )
     return parser
 
 
@@ -424,18 +430,35 @@ def train_dino(args):
         print(f"Unknow architecture: {args.arch}")
 
     # multi-crop wrapper handles forward with inputs of different resolutions
-    student = utils.MultiCropWrapper(
-        student,
-        DINOHead(
+    if args.use_conv_head:
+        student = nn.Sequential(*list(student.children())[:-2])
+        student_head = DINOHeadConvTranspose(
             embed_dim,
             args.out_dim,
             use_bn=args.use_bn_in_head,
             norm_last_layer=args.norm_last_layer,
-        ),
+        )
+        teacher = nn.Sequential(*list(teacher.children())[:-2])
+        teacher_head = DINOHeadConvTranspose(
+            embed_dim,
+            args.out_dim,
+            use_bn=args.use_bn_in_head,
+        )
+    else:
+        student_head = DINOHead(
+            embed_dim,
+            args.out_dim,
+            use_bn=args.use_bn_in_head,
+            norm_last_layer=args.norm_last_layer,
+        )
+        teacher_head = DINOHead(embed_dim, args.out_dim, args.use_bn_in_head)
+    student = utils.MultiCropWrapper(
+        student,
+        student_head,
     )
     teacher = utils.MultiCropWrapper(
         teacher,
-        DINOHead(embed_dim, args.out_dim, args.use_bn_in_head),
+        teacher_head,
     )
     # move networks to gpu
     student, teacher = student.cuda(), teacher.cuda()
