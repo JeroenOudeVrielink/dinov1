@@ -425,8 +425,8 @@ class DINOHeadConvTranspose(nn.Module):
             nn.ConvTranspose2d(
                 in_dim,
                 in_dim // (channel_reduction_factor**1),
-                kernel_size=2,
-                stride=2,
+                kernel_size=4,
+                stride=4,
             )
         ]
         if use_bn:
@@ -437,8 +437,8 @@ class DINOHeadConvTranspose(nn.Module):
             nn.ConvTranspose2d(
                 in_dim // (channel_reduction_factor**1),
                 in_dim // (channel_reduction_factor**2),
-                kernel_size=2,
-                stride=2,
+                kernel_size=4,
+                stride=4,
             )
         )
         if use_bn:
@@ -449,8 +449,8 @@ class DINOHeadConvTranspose(nn.Module):
             nn.ConvTranspose2d(
                 in_dim // (channel_reduction_factor**2),
                 in_dim // (channel_reduction_factor**3),
-                kernel_size=2,
-                stride=2,
+                kernel_size=4,
+                stride=4,
             )
         )
         if use_bn:
@@ -460,12 +460,13 @@ class DINOHeadConvTranspose(nn.Module):
         self.apply(self._init_weights)
         # output layer
         self.last_layer = nn.utils.weight_norm(
-            nn.ConvTranspose2d(
+            nn.Conv2d(
                 in_dim // (channel_reduction_factor**3),
                 1,
-                kernel_size=4,
-                stride=4,
+                kernel_size=3,
+                stride=1,
                 bias=False,
+                padding=1,
             )
         )
         self.last_layer.weight_g.data.fill_(1)

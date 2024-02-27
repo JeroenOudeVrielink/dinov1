@@ -6,7 +6,8 @@ import torch
 from torch import nn
 
 model = resnet50()
-model = nn.Sequential(*list(model.children())[:-2])
+# model = nn.Sequential(*list(model.children())[:-1])
+model = nn.Conv2d(3, 1, kernel_size=3, stride=1, padding=1)
 # model.fc = nn.Identity()
 # model.head = nn.Identity()
 # model.avgpool = nn.Identity()

@@ -438,8 +438,10 @@ def train_dino(args):
             use_bn=args.use_bn_in_head,
             norm_last_layer=args.norm_last_layer,
         )
-        # teacher = nn.Sequential(*list(teacher.children())[:-2])
-        teacher_head = DINOHead(embed_dim, args.out_dim, args.use_bn_in_head)
+        teacher = nn.Sequential(*list(teacher.children())[:-2])
+        teacher_head = DINOHeadConvTranspose(
+            embed_dim, args.out_dim, args.use_bn_in_head
+        )
     else:
         student_head = DINOHead(
             embed_dim,
