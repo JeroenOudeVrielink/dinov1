@@ -417,7 +417,7 @@ class DINOHeadConvTranspose(nn.Module):
         norm_last_layer=True,
         hidden_dim=2048,
         bottleneck_dim=256,
-        channel_reduction_factor=8,
+        channel_reduction_factor=16,
     ):
         super().__init__()
         # Layer 1
@@ -448,20 +448,20 @@ class DINOHeadConvTranspose(nn.Module):
         layers.append(
             nn.ConvTranspose2d(
                 in_dim // (channel_reduction_factor**2),
-                in_dim // (channel_reduction_factor**3),
+                in_dim // (channel_reduction_factor**2 * 8),
                 kernel_size=4,
                 stride=4,
             )
         )
         if use_bn:
-            layers.append(nn.BatchNorm2d(in_dim // (channel_reduction_factor**3)))
+            layers.append(nn.BatchNorm2d(in_dim // (channel_reduction_factor**2 * 8)))
         layers.append(nn.GELU())
         self.upsample = nn.Sequential(*layers)
         self.apply(self._init_weights)
         # output layer
         self.last_layer = nn.utils.weight_norm(
             nn.Conv2d(
-                in_dim // (channel_reduction_factor**3),
+                in_dim // (channel_reduction_factor**2 * 8),
                 1,
                 kernel_size=3,
                 stride=1,
