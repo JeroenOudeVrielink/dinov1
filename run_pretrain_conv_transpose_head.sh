@@ -4,7 +4,7 @@
 
 python main_dino.py \
 --exp_name dinov1_bs128_conv_head \
---output_dir /dinov1_models \
+--output_dir ~/data/dinov1_models \
 --data_path /jvrielink/AIML_rot_corrected \
 --arch resnet50 \
 --optimizer sgd \
@@ -17,9 +17,9 @@ python main_dino.py \
 --num_workers 14 \
 --wandb_log_freq 100 \
 --saveckp_freq 10 \
---epochs 400 \
---global_crop_size 448 \
---local_crop_size 192 \
+--epochs 401 \
+--global_crop_size 224 \
+--local_crop_size 96 \
 --use_conv_head 1 \
 --out_dim 50176
 
