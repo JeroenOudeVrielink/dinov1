@@ -5,7 +5,7 @@
 python main_dino.py \
 --exp_name dinov1_bs128_conv_head \
 --output_dir ~/data/dinov1_models \
---data_path /jvrielink/AIML_rot_corrected \
+--data_path ~/AIML_rot_corrected \
 --arch resnet50 \
 --optimizer sgd \
 --lr 0.03 \
