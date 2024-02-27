@@ -424,44 +424,44 @@ class DINOHeadConvTranspose(nn.Module):
         layers = [
             nn.ConvTranspose2d(
                 in_dim,
-                in_dim // (1 * channel_reduction_factor),
+                in_dim // (channel_reduction_factor**1),
                 kernel_size=2,
                 stride=2,
             )
         ]
         if use_bn:
-            layers.append(nn.BatchNorm2d(in_dim // (1 * channel_reduction_factor)))
+            layers.append(nn.BatchNorm2d(in_dim // (channel_reduction_factor**1)))
         layers.append(nn.GELU())
         # Layer 2
         layers.append(
             nn.ConvTranspose2d(
-                in_dim // (1 * channel_reduction_factor),
-                in_dim // (2 * channel_reduction_factor),
+                in_dim // (channel_reduction_factor**1),
+                in_dim // (channel_reduction_factor**2),
                 kernel_size=2,
                 stride=2,
             )
         )
         if use_bn:
-            layers.append(nn.BatchNorm2d(in_dim // (2 * channel_reduction_factor)))
+            layers.append(nn.BatchNorm2d(in_dim // (channel_reduction_factor**2)))
         layers.append(nn.GELU())
         # Layer 3
         layers.append(
             nn.ConvTranspose2d(
-                in_dim // (2 * channel_reduction_factor),
-                in_dim // (3 * channel_reduction_factor),
+                in_dim // (channel_reduction_factor**2),
+                in_dim // (channel_reduction_factor**3),
                 kernel_size=2,
                 stride=2,
             )
         )
         if use_bn:
-            layers.append(nn.BatchNorm2d(in_dim // (3 * channel_reduction_factor)))
+            layers.append(nn.BatchNorm2d(in_dim // (channel_reduction_factor**3)))
         layers.append(nn.GELU())
         self.upsample = nn.Sequential(*layers)
         self.apply(self._init_weights)
         # output layer
         self.last_layer = nn.utils.weight_norm(
             nn.ConvTranspose2d(
-                in_dim // (3 * channel_reduction_factor),
+                in_dim // (channel_reduction_factor**3),
                 1,
                 kernel_size=4,
                 stride=4,
