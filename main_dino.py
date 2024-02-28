@@ -32,7 +32,12 @@ from torchvision import models as torchvision_models
 
 import utils
 import vision_transformer as vits
-from vision_transformer import DINOHead, DINOHeadConvTranspose, DINOHeadConvTransposeV2
+from vision_transformer import (
+    DINOHead,
+    DINOHeadConvTranspose,
+    DINOHeadConvTransposeV2,
+    DINOHeadConvTransposeV3,
+)
 
 from aiml_dataset import AIMLDataset
 import wandb
@@ -432,14 +437,14 @@ def train_dino(args):
     # multi-crop wrapper handles forward with inputs of different resolutions
     if args.use_conv_head:
         student = nn.Sequential(*list(student.children())[:-2])
-        student_head = DINOHeadConvTransposeV2(
+        student_head = DINOHeadConvTransposeV3(
             embed_dim,
             args.out_dim,
             use_bn=args.use_bn_in_head,
             norm_last_layer=args.norm_last_layer,
         )
         teacher = nn.Sequential(*list(teacher.children())[:-2])
-        teacher_head = DINOHeadConvTransposeV2(
+        teacher_head = DINOHeadConvTransposeV3(
             embed_dim, args.out_dim, args.use_bn_in_head
         )
     else:
