@@ -487,3 +487,116 @@ class DINOHeadConvTranspose(nn.Module):
         x = self.last_layer(x)
         x = self.flatten(x)
         return x
+
+
+class DINOHeadConvTransposeV2(nn.Module):
+    def __init__(
+        self,
+        in_dim,
+        out_dim,
+        use_bn=False,
+        norm_last_layer=True,
+        hidden_dim=2048,
+        bottleneck_dim=256,
+        channel_reduction_factor=8,
+    ):
+        super().__init__()
+        # Layer 1
+        layers = []
+        layers.append(
+            nn.ConvTranspose2d(
+                in_dim,
+                in_dim,
+                kernel_size=2,
+                stride=2,
+            )
+        )
+        layers.append(nn.GELU())
+        layers.append(
+            nn.Conv2d(
+                in_dim, in_dim // (channel_reduction_factor**1), kernel_size=1, stride=1
+            )
+        )
+        layers.append(nn.GELU())
+
+        # Layer 2
+        layers.append(
+            nn.ConvTranspose2d(
+                in_dim // (channel_reduction_factor**1),
+                in_dim // (channel_reduction_factor**1),
+                kernel_size=2,
+                stride=2,
+            )
+        )
+        layers.append(nn.GELU())
+        layers.append(
+            nn.Conv2d(
+                in_dim // (channel_reduction_factor**1),
+                in_dim // (channel_reduction_factor**2),
+                kernel_size=1,
+                stride=1,
+            )
+        )
+        layers.append(nn.GELU())
+
+        # Layer 3
+        layers.append(
+            nn.ConvTranspose2d(
+                in_dim // (channel_reduction_factor**2),
+                in_dim // (channel_reduction_factor**2),
+                kernel_size=2,
+                stride=2,
+            )
+        )
+        layers.append(nn.GELU())
+        layers.append(
+            nn.Conv2d(
+                in_dim // (channel_reduction_factor**2),
+                in_dim // (channel_reduction_factor**3),
+                kernel_size=1,
+                stride=1,
+            )
+        )
+        layers.append(nn.GELU())
+
+        # layer 4
+        layers.append(
+            nn.ConvTranspose2d(
+                in_dim // (channel_reduction_factor**3),
+                in_dim // (channel_reduction_factor**3),
+                kernel_size=2,
+                stride=2,
+            )
+        )
+        layers.append(nn.GELU())
+        self.upsample = nn.Sequential(*layers)
+        self.apply(self._init_weights)
+        # output layer
+        self.last_layer = nn.utils.weight_norm(
+            nn.Conv2d(
+                in_dim // (channel_reduction_factor**3),
+                1,
+                kernel_size=1,
+                stride=1,
+                bias=False,
+            )
+        )
+        self.last_layer.weight_g.data.fill_(1)
+        if norm_last_layer:
+            self.last_layer.weight_g.requires_grad = False
+        self.flatten = nn.Flatten()
+
+    def _init_weights(self, m):
+        if isinstance(m, nn.Linear) or isinstance(m, nn.ConvTranspose2d):
+            trunc_normal_(m.weight, std=0.02)
+            if (
+                isinstance(m, nn.Linear) or isinstance(m, nn.ConvTranspose2d)
+            ) and m.bias is not None:
+                nn.init.constant_(m.bias, 0)
+
+    def forward(self, x):
+        x = self.upsample(x)
+        x = nn.functional.normalize(x, dim=-1, p=2)
+        x = self.last_layer(x)
+        x = self.flatten(x)
+        return x
