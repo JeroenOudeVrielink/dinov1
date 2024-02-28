@@ -564,8 +564,8 @@ class DINOHeadConvTransposeV2(nn.Module):
             nn.ConvTranspose2d(
                 in_dim // (channel_reduction_factor**3),
                 in_dim // (channel_reduction_factor**3),
-                kernel_size=2,
-                stride=2,
+                kernel_size=4,
+                stride=4,
             )
         )
         layers.append(nn.GELU())
