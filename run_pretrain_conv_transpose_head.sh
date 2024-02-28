@@ -17,7 +17,7 @@ python main_dino.py \
 --num_workers 8 \
 --wandb_log_freq 100 \
 --saveckp_freq 10 \
---epochs 401 \
+--epochs 301 \
 --use_conv_head 1 \
 --out_dim 50176 \
 --warmup_teacher_temp 0.004
