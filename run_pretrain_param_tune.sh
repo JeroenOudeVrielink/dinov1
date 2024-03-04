@@ -5,7 +5,7 @@
 python main_dino.py \
 --exp_name dinov1_bs128_no_norm_last_layer \
 --output_dir /dinov1_models \
---data_path /jvrielink/AIML_rot_corrected \
+--data_path /jvrielink/data/AIML_rot_corrected \
 --arch resnet50 \
 --optimizer sgd \
 --lr 0.03 \
@@ -24,7 +24,7 @@ python main_dino.py \
 python main_dino.py \
 --exp_name dinov1_bs128_0.9995momentum_teacher \
 --output_dir /dinov1_models \
---data_path /jvrielink/AIML_rot_corrected \
+--data_path /jvrielink/data/AIML_rot_corrected \
 --arch resnet50 \
 --optimizer sgd \
 --lr 0.03 \
@@ -42,7 +42,7 @@ python main_dino.py \
 python main_dino.py \
 --exp_name dinov1_bs128_increased_crop_scale \
 --output_dir /dinov1_models \
---data_path /jvrielink/AIML_rot_corrected \
+--data_path /jvrielink/data/AIML_rot_corrected \
 --arch resnet50 \
 --optimizer sgd \
 --lr 0.03 \
