@@ -4,8 +4,8 @@
 
 python main_dino.py \
 --exp_name dinov1_bs128_no_horizontal_flip \
---output_dir /dinov1_models \
---data_path /jvrielink/AIML_rot_corrected \
+--output_dir ~/data/dinov1_models \
+--data_path ~/AIML_rot_corrected \
 --arch resnet50 \
 --optimizer sgd \
 --lr 0.03 \
@@ -23,8 +23,8 @@ python main_dino.py \
 
 python main_dino.py \
 --exp_name dinov1_bs128_no_color_jitter \
---output_dir /dinov1_models \
---data_path /jvrielink/AIML_rot_corrected \
+--output_dir ~/data/dinov1_models \
+--data_path ~/AIML_rot_corrected \
 --arch resnet50 \
 --optimizer sgd \
 --lr 0.03 \
@@ -42,8 +42,8 @@ python main_dino.py \
 
 python main_dino.py \
 --exp_name dinov1_bs128_no_solarization \
---output_dir /dinov1_models \
---data_path /jvrielink/AIML_rot_corrected \
+--output_dir ~/data/dinov1_models \
+--data_path ~/AIML_rot_corrected \
 --arch resnet50 \
 --optimizer sgd \
 --lr 0.03 \
@@ -61,8 +61,8 @@ python main_dino.py \
 
 python main_dino.py \
 --exp_name dinov1_bs128_no_gaussian_blur \
---output_dir /dinov1_models \
---data_path /jvrielink/AIML_rot_corrected \
+--output_dir ~/data/dinov1_models \
+--data_path ~/AIML_rot_corrected \
 --arch resnet50 \
 --optimizer sgd \
 --lr 0.03 \
