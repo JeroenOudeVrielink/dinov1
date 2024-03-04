@@ -2,7 +2,8 @@ from torchvision import transforms
 from PIL import Image
 import numpy as np
 import cv2
-from utils import utils
+import utils
+from torch import nn
 
 
 # class DataAugmentationDINO(object):
