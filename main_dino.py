@@ -44,6 +44,8 @@ import wandb
 import cv2
 import numpy as np
 
+from data_augmentation import DataAugmentationDINO
+
 
 def init_wandb(args):
     run_name = os.path.basename(os.path.normpath(args.output_dir))
@@ -362,6 +364,30 @@ def get_args_parser():
         type=int,
         help="Whether to use a convolutional head",
     )
+    parser.add_argument(
+        "--p_horizontal_flip",
+        default=0.5,
+        type=float,
+        help="probability of horizontal flip",
+    )
+    parser.add_argument(
+        "--p_color_jitter",
+        default=0.8,
+        type=float,
+        help="probability of color jitter",
+    )
+    parser.add_argument(
+        "--p_solarization",
+        default=0.1,
+        type=float,
+        help="probability of using solarization",
+    )
+    parser.add_argument(
+        "--disable_gaussian_blur",
+        default=False,
+        type=bool,
+        help="whether to disable gaussian blur",
+    )
     return parser
 
 
@@ -385,6 +411,10 @@ def train_dino(args):
         args.local_crop_size,
         args.use_dino_augmentation,
         args.use_edge_preserving_filter,
+        args.p_horizontal_flip,
+        args.p_color_jitter,
+        args.p_solarization,
+        args.disable_gaussian_blur,
     )
     # dataset = datasets.ImageFolder(args.data_path, transform=transform)
     dataset = AIMLDataset(
@@ -766,101 +796,6 @@ class EdgePreservingFilter(nn.Module):
         )
         smooth = Image.fromarray(smooth)
         return smooth
-
-
-class DataAugmentationDINO(object):
-    def __init__(
-        self,
-        global_crops_scale,
-        local_crops_scale,
-        local_crops_number,
-        global_crop_size=224,
-        local_crop_size=96,
-        use_dino_augmentation=True,
-        use_edge_preserving_filter=False,
-    ):
-        flip_and_color_jitter = transforms.Compose(
-            [
-                transforms.RandomHorizontalFlip(p=0.5),
-                transforms.RandomApply(
-                    [
-                        transforms.ColorJitter(
-                            brightness=0.4, contrast=0.4, saturation=0.2, hue=0.1
-                        )
-                    ],
-                    p=0.8,
-                ),
-                transforms.RandomGrayscale(p=0.2),
-            ]
-        )
-        normalize = transforms.Compose(
-            [
-                transforms.Grayscale(num_output_channels=3),
-                transforms.ToTensor(),
-                # transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225)),
-            ]
-        )
-
-        global_crop_aug_1 = [
-            transforms.RandomResizedCrop(
-                global_crop_size,
-                scale=global_crops_scale,
-                interpolation=Image.BICUBIC,
-            )
-        ]
-        if use_dino_augmentation:
-            global_crop_aug_1 += [
-                flip_and_color_jitter,
-                utils.GaussianBlur(1.0),
-            ]
-        global_crop_aug_1 += [normalize]
-        # first global crop
-        self.global_transfo1 = transforms.Compose(global_crop_aug_1)
-
-        global_crop_aug_2 = [
-            transforms.RandomResizedCrop(
-                global_crop_size,
-                scale=global_crops_scale,
-                interpolation=Image.BICUBIC,
-            )
-        ]
-        if use_dino_augmentation:
-            global_crop_aug_2 += [
-                flip_and_color_jitter,
-                utils.GaussianBlur(0.1),
-                utils.Solarization(0.2),
-            ]
-        global_crop_aug_2 += [normalize]
-        # second global crop
-        self.global_transfo2 = transforms.Compose(global_crop_aug_2)
-
-        local_crop_aug = [
-            transforms.RandomResizedCrop(
-                local_crop_size,
-                scale=local_crops_scale,
-                interpolation=Image.BICUBIC,
-            )
-        ]
-        if use_dino_augmentation:
-            local_crop_aug += [
-                flip_and_color_jitter,
-                utils.GaussianBlur(p=0.5),
-            ]
-        if use_edge_preserving_filter:
-            local_crop_aug += [EdgePreservingFilter()]
-        local_crop_aug += [normalize]
-        # transformation for the local small crops
-        self.local_crops_number = local_crops_number
-        self.local_transfo = transforms.Compose(local_crop_aug)
-        pass
-
-    def __call__(self, image):
-        crops = []
-        crops.append(self.global_transfo1(image))
-        crops.append(self.global_transfo2(image))
-        for _ in range(self.local_crops_number):
-            crops.append(self.local_transfo(image))
-        return crops
 
 
 if __name__ == "__main__":
