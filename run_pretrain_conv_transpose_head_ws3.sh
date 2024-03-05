@@ -16,10 +16,7 @@ python main_dino.py \
 --batch_size_per_gpu 128 \
 --num_workers 14 \
 --wandb_log_freq 100 \
---saveckp_freq 10 \
---epochs 401 \
---global_crop_size 224 \
---local_crop_size 96 \
---use_conv_head 1 \
---out_dim 50176
+--saveckp_freq 20 \
+--epochs 61 \
+--use_conv_head 1
 

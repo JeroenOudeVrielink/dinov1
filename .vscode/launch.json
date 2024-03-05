@@ -36,14 +36,8 @@
                 "2",
                 "--num_workers",
                 "4",
-                "--use_dino_augmentation",
-                "1",
-                "--use_edge_preserving_filter",
-                "0",
                 "--use_conv_head",
                 "1",
-                "--out_dim",
-                "50176"
             ]
         }
     ]

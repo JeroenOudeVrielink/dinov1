@@ -34,9 +34,7 @@ import utils
 import vision_transformer as vits
 from vision_transformer import (
     DINOHead,
-    DINOHeadConvTranspose,
-    DINOHeadConvTransposeV2,
-    DINOHeadConvTransposeV3,
+    DINOHeadV2,
 )
 
 from aiml_dataset import AIMLDataset
@@ -467,16 +465,14 @@ def train_dino(args):
     # multi-crop wrapper handles forward with inputs of different resolutions
     if args.use_conv_head:
         student = nn.Sequential(*list(student.children())[:-2])
-        student_head = DINOHeadConvTransposeV3(
+        student_head = DINOHeadV2(
             embed_dim,
             args.out_dim,
             use_bn=args.use_bn_in_head,
             norm_last_layer=args.norm_last_layer,
         )
         teacher = nn.Sequential(*list(teacher.children())[:-2])
-        teacher_head = DINOHeadConvTransposeV3(
-            embed_dim, args.out_dim, args.use_bn_in_head
-        )
+        teacher_head = DINOHeadV2(embed_dim, args.out_dim, args.use_bn_in_head)
     else:
         student_head = DINOHead(
             embed_dim,
@@ -806,5 +802,5 @@ if __name__ == "__main__":
         args.output_dir = os.path.join(
             args.output_dir, args.exp_name + "_" + args.date_time
         )
-        Path(args.output_dir).mkdir(parents=False, exist_ok=True)
+        Path(args.output_dir).mkdir(parents=True, exist_ok=True)
     train_dino(args)
