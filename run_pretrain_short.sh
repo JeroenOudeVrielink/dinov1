@@ -2,8 +2,6 @@
 
 # Num workers was 14 (optimal) but caused OOM errors for RAM on ws7
 
-sleep 10h
-
 python main_dino.py \
 --exp_name dinov1_bs128_base_param_ep61 \
 --output_dir /dinov1_models \
