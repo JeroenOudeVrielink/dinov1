@@ -7,7 +7,7 @@ sleep 10h
 python main_dino.py \
 --exp_name dinov1_bs128_base_param_ep61 \
 --output_dir /dinov1_models \
---data_path /jvrielink/AIML_rot_corrected \
+--data_path /AIML_rot_corrected \
 --arch resnet50 \
 --optimizer sgd \
 --lr 0.03 \
