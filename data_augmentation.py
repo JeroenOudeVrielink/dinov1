@@ -99,6 +99,7 @@ class DataAugmentationDINO(object):
         p_color_jitter=0.8,
         p_solarization=0.2,
         disable_gaussian_blur=False,
+        p_random_rotation=0,
     ):
         flip_and_color_jitter = transforms.Compose(
             [
@@ -111,7 +112,15 @@ class DataAugmentationDINO(object):
                     ],
                     p=p_color_jitter,
                 ),
-                # transforms.RandomGrayscale(p=0.2),
+                transforms.RandomApply(
+                    [
+                        transforms.RandomRotation(
+                            degrees=20,
+                            interpolation=transforms.InterpolationMode.BILINEAR,
+                        )
+                    ],
+                    p=p_random_rotation,
+                ),
             ]
         )
         normalize = transforms.Compose(
@@ -134,6 +143,8 @@ class DataAugmentationDINO(object):
                 flip_and_color_jitter,
                 utils.GaussianBlur(0 if disable_gaussian_blur else 1.0),
             ]
+        if use_edge_preserving_filter:
+            global_crop_aug_1 += [EdgePreservingFilter()]
         global_crop_aug_1 += [normalize]
         # first global crop
         self.global_transfo1 = transforms.Compose(global_crop_aug_1)
@@ -151,6 +162,8 @@ class DataAugmentationDINO(object):
                 utils.GaussianBlur(0 if disable_gaussian_blur else 0.1),
                 utils.Solarization(p=p_solarization),
             ]
+        if use_edge_preserving_filter:
+            global_crop_aug_2 += [transforms.RandomApply(EdgePreservingFilter(), p=0.1)]
         global_crop_aug_2 += [normalize]
         # second global crop
         self.global_transfo2 = transforms.Compose(global_crop_aug_2)
@@ -168,7 +181,7 @@ class DataAugmentationDINO(object):
                 utils.GaussianBlur(p=0 if disable_gaussian_blur else 0.5),
             ]
         if use_edge_preserving_filter:
-            local_crop_aug += [EdgePreservingFilter()]
+            local_crop_aug += [transforms.RandomApply(EdgePreservingFilter(), p=0.5)]
         local_crop_aug += [normalize]
         # transformation for the local small crops
         self.local_crops_number = local_crops_number

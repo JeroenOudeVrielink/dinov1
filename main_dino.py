@@ -386,6 +386,12 @@ def get_args_parser():
         type=bool,
         help="whether to disable gaussian blur",
     )
+    parser.add_argument(
+        "--p_random_rotation",
+        default=0,
+        type=float,
+        help="probability of random rotation",
+    )
     return parser
 
 
