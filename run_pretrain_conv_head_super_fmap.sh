@@ -5,7 +5,7 @@
 python main_dino.py \
 --exp_name dinov1_bs64_conv_head_super_fmap \
 --output_dir /dinov1_models \
---data_path /jvrielink/AIML_rot_corrected \
+--data_path /AIML_rot_corrected \
 --arch resnet50 \
 --optimizer sgd \
 --lr 0.03 \
@@ -14,7 +14,7 @@ python main_dino.py \
 --global_crops_scale 0.14 1 \
 --local_crops_scale 0.05 0.14 \
 --batch_size_per_gpu 64 \
---num_workers 12 \
+--num_workers 14 \
 --wandb_log_freq 100 \
 --saveckp_freq 20 \
 --epochs 301 \
