@@ -4,8 +4,8 @@
 
 python main_dino.py \
 --exp_name test \
---output_dir /dinov1_models \
---data_path /AIML_rot_corrected \
+--output_dir ~/data/dinov1_models \
+--data_path ~/AIML_rot_corrected \
 --arch resnet50 \
 --optimizer sgd \
 --lr 0.03 \
