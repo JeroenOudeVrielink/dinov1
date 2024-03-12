@@ -5,7 +5,7 @@
 python main_dino.py \
 --from_ckpt True \
 --exp_name dinov1_bs64_conv_head_super_fmap \
---output_dir /dino_models/dinov1_bs64_conv_head_super_fmap_2024-03-08_05-10-07 \
+--output_dir /dinov1_models/dinov1_bs64_conv_head_super_fmap_2024-03-08_05-10-07 \
 --data_path /AIML_rot_corrected \
 --arch resnet50 \
 --optimizer sgd \
