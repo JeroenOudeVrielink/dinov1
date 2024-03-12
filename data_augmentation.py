@@ -163,7 +163,9 @@ class DataAugmentationDINO(object):
                 utils.Solarization(p=p_solarization),
             ]
         if use_edge_preserving_filter:
-            global_crop_aug_2 += [transforms.RandomApply(EdgePreservingFilter(), p=0.1)]
+            global_crop_aug_2 += [
+                transforms.RandomApply([EdgePreservingFilter()], p=0.1)
+            ]
         global_crop_aug_2 += [normalize]
         # second global crop
         self.global_transfo2 = transforms.Compose(global_crop_aug_2)
@@ -181,7 +183,7 @@ class DataAugmentationDINO(object):
                 utils.GaussianBlur(p=0 if disable_gaussian_blur else 0.5),
             ]
         if use_edge_preserving_filter:
-            local_crop_aug += [transforms.RandomApply(EdgePreservingFilter(), p=0.5)]
+            local_crop_aug += [transforms.RandomApply([EdgePreservingFilter()], p=0.5)]
         local_crop_aug += [normalize]
         # transformation for the local small crops
         self.local_crops_number = local_crops_number

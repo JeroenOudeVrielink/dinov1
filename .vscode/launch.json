@@ -36,8 +36,10 @@
                 "2",
                 "--num_workers",
                 "4",
-                "--use_conv_head",
-                "1",
+                "--use_edge_preserving_filter",
+                "True",
+                "--disable_gaussian_blur",
+                "True",
             ]
         }
     ]

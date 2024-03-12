@@ -35,6 +35,7 @@ import vision_transformer as vits
 from vision_transformer import (
     DINOHead,
     DINOHeadV2,
+    DINOHeadV3,
 )
 
 from aiml_dataset import AIMLDataset
@@ -352,14 +353,14 @@ def get_args_parser():
     )
     parser.add_argument(
         "--use_edge_preserving_filter",
-        default=0,
-        type=int,
+        default=False,
+        type=bool,
         help="Whether to use the edge preserving filter",
     )
     parser.add_argument(
         "--use_conv_head",
-        default=0,
-        type=int,
+        default=False,
+        type=bool,
         help="Whether to use a convolutional head",
     )
     parser.add_argument(
@@ -419,6 +420,7 @@ def train_dino(args):
         args.p_color_jitter,
         args.p_solarization,
         args.disable_gaussian_blur,
+        args.p_random_rotation,
     )
     # dataset = datasets.ImageFolder(args.data_path, transform=transform)
     dataset = AIMLDataset(
@@ -471,14 +473,14 @@ def train_dino(args):
     # multi-crop wrapper handles forward with inputs of different resolutions
     if args.use_conv_head:
         student = nn.Sequential(*list(student.children())[:-2])
-        student_head = DINOHeadV2(
+        student_head = DINOHeadV3(
             embed_dim,
             args.out_dim,
             use_bn=args.use_bn_in_head,
             norm_last_layer=args.norm_last_layer,
         )
         teacher = nn.Sequential(*list(teacher.children())[:-2])
-        teacher_head = DINOHeadV2(embed_dim, args.out_dim, args.use_bn_in_head)
+        teacher_head = DINOHeadV3(embed_dim, args.out_dim, args.use_bn_in_head)
     else:
         student_head = DINOHead(
             embed_dim,

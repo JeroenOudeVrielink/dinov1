@@ -1,0 +1,170 @@
+wandb_version: 1
+
+arch:
+  desc: null
+  value: resnet50
+patch_size:
+  desc: null
+  value: 16
+out_dim:
+  desc: null
+  value: 65536
+norm_last_layer:
+  desc: null
+  value: true
+momentum_teacher:
+  desc: null
+  value: 0.996
+use_bn_in_head:
+  desc: null
+  value: false
+warmup_teacher_temp:
+  desc: null
+  value: 0.04
+teacher_temp:
+  desc: null
+  value: 0.04
+warmup_teacher_temp_epochs:
+  desc: null
+  value: 0
+use_fp16:
+  desc: null
+  value: true
+weight_decay:
+  desc: null
+  value: 0.0001
+weight_decay_end:
+  desc: null
+  value: 0.0001
+clip_grad:
+  desc: null
+  value: 3.0
+batch_size_per_gpu:
+  desc: null
+  value: 2
+epochs:
+  desc: null
+  value: 100
+freeze_last_layer:
+  desc: null
+  value: 1
+lr:
+  desc: null
+  value: 0.03
+warmup_epochs:
+  desc: null
+  value: 10
+min_lr:
+  desc: null
+  value: 1.0e-06
+optimizer:
+  desc: null
+  value: sgd
+drop_path_rate:
+  desc: null
+  value: 0.1
+global_crops_scale:
+  desc: null
+  value:
+  - 0.14
+  - 1.0
+local_crops_number:
+  desc: null
+  value: 8
+local_crops_scale:
+  desc: null
+  value:
+  - 0.05
+  - 0.14
+data_path:
+  desc: null
+  value: /mnt/sdb1/Data_remote/AIML_rot_corrected
+output_dir:
+  desc: null
+  value: debug_output/debug_2024-03-12_15-13-22
+saveckp_freq:
+  desc: null
+  value: 20
+seed:
+  desc: null
+  value: 0
+num_workers:
+  desc: null
+  value: 4
+dist_url:
+  desc: null
+  value: env://
+local_rank:
+  desc: null
+  value: 0
+exp_name:
+  desc: null
+  value: debug
+date_time:
+  desc: null
+  value: 2024-03-12_15-13-22
+wandb_log_freq:
+  desc: null
+  value: 100
+from_ckpt:
+  desc: null
+  value: false
+global_crop_size:
+  desc: null
+  value: 224
+local_crop_size:
+  desc: null
+  value: 96
+use_dino_augmentation:
+  desc: null
+  value: 1
+use_edge_preserving_filter:
+  desc: null
+  value: true
+use_conv_head:
+  desc: null
+  value: false
+p_horizontal_flip:
+  desc: null
+  value: 0.5
+p_color_jitter:
+  desc: null
+  value: 0.8
+p_solarization:
+  desc: null
+  value: 0.1
+disable_gaussian_blur:
+  desc: null
+  value: true
+p_random_rotation:
+  desc: null
+  value: 0
+_wandb:
+  desc: null
+  value:
+    python_version: 3.11.7
+    cli_version: 0.16.2
+    framework: torch
+    is_jupyter_run: false
+    is_kaggle_kernel: false
+    start_time: 1710218605.430169
+    t:
+      1:
+      - 1
+      - 41
+      - 55
+      - 63
+      2:
+      - 1
+      - 41
+      - 55
+      - 63
+      3:
+      - 13
+      - 16
+      - 23
+      4: 3.11.7
+      5: 0.16.2
+      8:
+      - 5
+      13: linux-x86_64
