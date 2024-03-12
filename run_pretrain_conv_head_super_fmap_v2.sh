@@ -5,7 +5,7 @@
 python main_dino.py \
 --from_ckpt True \
 --exp_name dinov1_bs64_conv_head_super_fmap \
---output_dir /dinov1_bs64_conv_head_super_fmap_2024-03-08_05-10-07 \
+--output_dir /dino_models/dinov1_bs64_conv_head_super_fmap_2024-03-08_05-10-07 \
 --data_path /AIML_rot_corrected \
 --arch resnet50 \
 --optimizer sgd \
@@ -18,6 +18,6 @@ python main_dino.py \
 --num_workers 10 \
 --wandb_log_freq 100 \
 --saveckp_freq 20 \
---epochs 61 \
+--epochs 301 \
 --use_conv_head True \
 --out_dim 50176
