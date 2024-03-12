@@ -473,14 +473,14 @@ def train_dino(args):
     # multi-crop wrapper handles forward with inputs of different resolutions
     if args.use_conv_head:
         student = nn.Sequential(*list(student.children())[:-2])
-        student_head = DINOHeadV3(
+        student_head = DINOHeadV2(
             embed_dim,
             args.out_dim,
             use_bn=args.use_bn_in_head,
             norm_last_layer=args.norm_last_layer,
         )
         teacher = nn.Sequential(*list(teacher.children())[:-2])
-        teacher_head = DINOHeadV3(embed_dim, args.out_dim, args.use_bn_in_head)
+        teacher_head = DINOHeadV2(embed_dim, args.out_dim, args.use_bn_in_head)
     else:
         student_head = DINOHead(
             embed_dim,
