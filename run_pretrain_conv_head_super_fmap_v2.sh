@@ -19,5 +19,4 @@ python main_dino.py \
 --wandb_log_freq 100 \
 --saveckp_freq 20 \
 --epochs 301 \
---use_conv_head True \
---out_dim 50176
+--use_conv_head True
