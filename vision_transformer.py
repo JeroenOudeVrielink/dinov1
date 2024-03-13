@@ -370,21 +370,27 @@ class DINOHead(nn.Module):
         nlayers=3,
         hidden_dim=2048,
         bottleneck_dim=256,
+        activation="gelu",
     ):
         super().__init__()
         nlayers = max(nlayers, 1)
+        if activation == "gelu":
+            act_func = nn.GELU()
+        elif activation == "relu":
+            act_func = nn.ReLU()
+
         if nlayers == 1:
             self.mlp = nn.Linear(in_dim, bottleneck_dim)
         else:
             layers = [nn.Linear(in_dim, hidden_dim)]
             if use_bn:
                 layers.append(nn.BatchNorm1d(hidden_dim))
-            layers.append(nn.GELU())
+            layers.append(act_func)
             for _ in range(nlayers - 2):
                 layers.append(nn.Linear(hidden_dim, hidden_dim))
                 if use_bn:
                     layers.append(nn.BatchNorm1d(hidden_dim))
-                layers.append(nn.GELU())
+                layers.append(act_func)
             layers.append(nn.Linear(hidden_dim, bottleneck_dim))
             self.mlp = nn.Sequential(*layers)
         self.apply(self._init_weights)

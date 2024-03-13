@@ -43,7 +43,7 @@ import wandb
 import cv2
 import numpy as np
 
-from data_augmentation import DataAugmentationDINO
+from data_augmentation import DataAugmentationDINO, CustomDataAugmentationDINO
 
 
 def init_wandb(args):
@@ -393,6 +393,18 @@ def get_args_parser():
         type=float,
         help="probability of random rotation",
     )
+    parser.add_argument(
+        "--custom_augmentation",
+        default=False,
+        type=bool,
+        help="whether to use custom augmentation",
+    )
+    parser.add_argument(
+        "--activation",
+        default="gelu",
+        type=str,
+        help="activation function to use in projection head",
+    )
     return parser
 
 
@@ -408,20 +420,27 @@ def train_dino(args):
     cudnn.benchmark = True
 
     # ============ preparing data ... ============
-    transform = DataAugmentationDINO(
-        args.global_crops_scale,
-        args.local_crops_scale,
-        args.local_crops_number,
-        args.global_crop_size,
-        args.local_crop_size,
-        args.use_dino_augmentation,
-        args.use_edge_preserving_filter,
-        args.p_horizontal_flip,
-        args.p_color_jitter,
-        args.p_solarization,
-        args.disable_gaussian_blur,
-        args.p_random_rotation,
-    )
+    if not args.custom_augmentation:
+        transform = DataAugmentationDINO(
+            args.global_crops_scale,
+            args.local_crops_scale,
+            args.local_crops_number,
+            args.global_crop_size,
+            args.local_crop_size,
+            args.use_dino_augmentation,
+            args.use_edge_preserving_filter,
+            args.p_horizontal_flip,
+            args.p_color_jitter,
+            args.p_solarization,
+            args.disable_gaussian_blur,
+            args.p_random_rotation,
+        )
+    else:
+        transform = CustomDataAugmentationDINO(
+            args.global_crops_scale,
+            args.local_crops_scale,
+            args.local_crops_number,
+        )
     # dataset = datasets.ImageFolder(args.data_path, transform=transform)
     dataset = AIMLDataset(
         "annotations/img_paths.csv", args.data_path, transform=transform
@@ -487,8 +506,11 @@ def train_dino(args):
             args.out_dim,
             use_bn=args.use_bn_in_head,
             norm_last_layer=args.norm_last_layer,
+            activation=args.activation,
         )
-        teacher_head = DINOHead(embed_dim, args.out_dim, args.use_bn_in_head)
+        teacher_head = DINOHead(
+            embed_dim, args.out_dim, args.use_bn_in_head, activation=args.activation
+        )
     student = utils.MultiCropWrapper(
         student,
         student_head,
