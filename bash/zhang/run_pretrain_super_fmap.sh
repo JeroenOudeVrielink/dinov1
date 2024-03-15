@@ -5,7 +5,7 @@
 cd ../..
 
 python main_dino.py \
---exp_name dinov1_bs128_super_fmap_v3 \
+--exp_name dinov1_bs128_ep400_super_fmap_v3 \
 --output_dir /dinov1_models \
 --data_path /AIML_rot_corrected \
 --arch resnet50 \
