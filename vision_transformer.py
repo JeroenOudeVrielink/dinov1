@@ -527,10 +527,13 @@ class DINOHeadV3(nn.Module):
         nlayers=3,
         hidden_dim=2048,
         bottleneck_dim=256,
+        kernel_size=3,
     ):
         super().__init__()
         conv3x3 = []
-        conv3x3.append(nn.Conv2d(2, 1, kernel_size=3, stride=1, padding=1))
+        conv3x3.append(
+            nn.Conv2d(2, 1, kernel_size=kernel_size, stride=1, padding=kernel_size // 2)
+        )
         conv3x3.append(nn.GELU())
         self.conv3x3 = nn.Sequential(*conv3x3)
 

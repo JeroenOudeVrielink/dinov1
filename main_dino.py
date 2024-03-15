@@ -405,6 +405,12 @@ def get_args_parser():
         type=str,
         help="activation function to use in projection head",
     )
+    parser.add_argument(
+        "--kernel_size",
+        default=3,
+        type=int,
+        help="kernel size of the convolutional head",
+    )
     return parser
 
 
@@ -497,9 +503,12 @@ def train_dino(args):
             args.out_dim,
             use_bn=args.use_bn_in_head,
             norm_last_layer=args.norm_last_layer,
+            kernel_size=args.kernel_size,
         )
         teacher = nn.Sequential(*list(teacher.children())[:-2])
-        teacher_head = DINOHeadV3(embed_dim, args.out_dim, args.use_bn_in_head)
+        teacher_head = DINOHeadV3(
+            embed_dim, args.out_dim, args.use_bn_in_head, kernel_size=args.kernel_size
+        )
     else:
         student_head = DINOHead(
             embed_dim,
