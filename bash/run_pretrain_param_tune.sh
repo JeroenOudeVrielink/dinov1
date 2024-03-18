@@ -2,6 +2,8 @@
 
 # Num workers was 14 (optimal) but caused OOM errors for RAM on ws7
 
+cd ..
+
 python main_dino.py \
 --exp_name dinov1_bs128_increased_crop_scale_v2 \
 --output_dir /dinov1_models \
