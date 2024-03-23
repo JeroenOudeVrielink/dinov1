@@ -5,7 +5,7 @@
 cd ../..
 
 python main_dino.py \
---exp_name dinov1_bs128_ep400_super_fmap_v3 \
+--exp_name dinov1_bs128_ep400_super_fmap_v4 \
 --output_dir /dinov1_models \
 --data_path /AIML_rot_corrected \
 --arch resnet50 \
@@ -16,9 +16,9 @@ python main_dino.py \
 --global_crops_scale 0.14 1 \
 --local_crops_scale 0.05 0.14 \
 --batch_size_per_gpu 128 \
---num_workers 10 \
+--num_workers 14 \
 --wandb_log_freq 100 \
 --saveckp_freq 20 \
---epochs 401 \
+--epochs 61 \
 --use_conv_head True \
 --out_dim 50176
