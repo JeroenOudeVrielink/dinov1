@@ -596,11 +596,13 @@ class DINOHeadV4(nn.Module):
     ):
         super().__init__()
         conv = []
-        conv.append(
+        self.conv = nn.Sequential(*conv)
+        self.conv = nn.utils.weight_norm(
             nn.Conv2d(2, 1, kernel_size=kernel_size, stride=1, padding=kernel_size // 2)
         )
-        self.conv = nn.Sequential(*conv)
-        self.apply(self._init_weights)
+        self.conv.weight_g.data.fill_(1)
+        if norm_last_layer:
+            self.conv.weight_g.requires_grad = False
 
     def _init_weights(self, m):
         if isinstance(m, nn.Linear):
