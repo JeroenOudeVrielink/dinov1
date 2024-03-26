@@ -582,6 +582,55 @@ class DINOHeadV3(nn.Module):
         return x
 
 
+class DINOHeadV4(nn.Module):
+    def __init__(
+        self,
+        in_dim,
+        out_dim,
+        use_bn=False,
+        norm_last_layer=True,
+        nlayers=3,
+        hidden_dim=2048,
+        bottleneck_dim=256,
+        kernel_size=3,
+    ):
+        super().__init__()
+        conv3x3 = []
+        conv3x3.append(
+            nn.Conv2d(2, 1, kernel_size=kernel_size, stride=1, padding=kernel_size // 2)
+        )
+        self.conv3x3 = nn.Sequential(*conv3x3)
+        self.apply(self._init_weights)
+
+    def _init_weights(self, m):
+        if isinstance(m, nn.Linear):
+            trunc_normal_(m.weight, std=0.02)
+            if isinstance(m, nn.Linear) and m.bias is not None:
+                nn.init.constant_(m.bias, 0)
+
+    def forward(self, x):
+        # batch, 2, 1024, 7, 7
+        x = x.reshape(x.shape[0], 2, 1024, x.shape[2], x.shape[3])
+        # batch, 2, 32, 32, 49
+        x = x.reshape(x.shape[0], x.shape[1], 32, 32, x.shape[3] * x.shape[4])
+        # 2 batch 49 32 32
+        x = x.permute(1, 0, 4, 2, 3)
+
+        x1 = x[0]
+        x2 = x[1]
+        image1 = patches_to_grid(x1)
+        image2 = patches_to_grid(x2)
+        # batch 2 244 244
+        x = torch.cat((image1.unsqueeze(dim=1), image2.unsqueeze(dim=1)), dim=1)
+        # batch 1 244 244
+        x = self.conv3x3(x)
+        # batch 244 244
+        x = x.squeeze(dim=1)
+        # batch 50176
+        x = torch.flatten(x, start_dim=-2)
+        return x
+
+
 class DINOHeadConvTranspose(nn.Module):
     def __init__(
         self,

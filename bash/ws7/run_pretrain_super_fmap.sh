@@ -5,9 +5,9 @@
 cd ../..
 
 python main_dino.py \
---exp_name dinov1_bs128_ep61_super_fmap_v4 \
---output_dir /dinov1_models \
---data_path /AIML_rot_corrected \
+--exp_name dinov1_bs128_ep60_super_fmap_v4 \
+--output_dir ~/data/dinov1_models \
+--data_path ~/AIML_rot_corrected \
 --arch resnet50 \
 --optimizer sgd \
 --lr 0.03 \
@@ -15,8 +15,8 @@ python main_dino.py \
 --weight_decay_end 1e-4 \
 --global_crops_scale 0.14 1 \
 --local_crops_scale 0.05 0.14 \
---batch_size_per_gpu 128 \
---num_workers 10 \
+--batch_size_per_gpu 32 \
+--num_workers 4 \
 --wandb_log_freq 100 \
 --saveckp_freq 20 \
 --epochs 61 \
