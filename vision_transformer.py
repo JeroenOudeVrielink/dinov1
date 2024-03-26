@@ -595,8 +595,6 @@ class DINOHeadV4(nn.Module):
         kernel_size=3,
     ):
         super().__init__()
-        conv = []
-        self.conv = nn.Sequential(*conv)
         self.conv = nn.utils.weight_norm(
             nn.Conv2d(2, 1, kernel_size=kernel_size, stride=1, padding=kernel_size // 2)
         )
