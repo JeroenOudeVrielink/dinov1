@@ -595,12 +595,20 @@ class DINOHeadV4(nn.Module):
         kernel_size=3,
     ):
         super().__init__()
-        self.conv = nn.utils.weight_norm(
+        conv = []
+        conv.append(
             nn.Conv2d(2, 1, kernel_size=kernel_size, stride=1, padding=kernel_size // 2)
         )
-        self.conv.weight_g.data.fill_(1)
+        conv.append(nn.GELU())
+        self.conv = nn.Sequential(*conv)
+        self.apply(self._init_weights)
+
+        self.last_layer = nn.utils.weight_norm(
+            nn.Conv2d(2, 1, kernel_size=kernel_size, stride=1, padding=kernel_size // 2)
+        )
+        self.last_layer.weight_g.data.fill_(1)
         if norm_last_layer:
-            self.conv.weight_g.requires_grad = False
+            self.last_layer.weight_g.requires_grad = False
 
     def _init_weights(self, m):
         if isinstance(m, nn.Linear):
@@ -625,6 +633,7 @@ class DINOHeadV4(nn.Module):
         # batch 1 244 244
         x = self.conv(x)
         # batch 244 244
+        x = self.last_layer(x)
         x = x.squeeze(dim=1)
         # batch 50176
         x = torch.flatten(x, start_dim=-2)
