@@ -595,10 +595,11 @@ class DINOHeadV4(nn.Module):
         kernel_size=3,
     ):
         super().__init__()
-        conv3x3 = []
-        conv3x3.append(
+        conv = []
+        conv.append(
             nn.Conv2d(2, 1, kernel_size=kernel_size, stride=1, padding=kernel_size // 2)
         )
+        self.conv = nn.Sequential(*conv)
         self.apply(self._init_weights)
 
     def _init_weights(self, m):
@@ -622,7 +623,7 @@ class DINOHeadV4(nn.Module):
         # batch 2 244 244
         x = torch.cat((image1.unsqueeze(dim=1), image2.unsqueeze(dim=1)), dim=1)
         # batch 1 244 244
-        x = self.conv3x3(x)
+        x = self.conv(x)
         # batch 244 244
         x = x.squeeze(dim=1)
         # batch 50176
