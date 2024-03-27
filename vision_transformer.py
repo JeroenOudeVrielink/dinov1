@@ -598,7 +598,7 @@ class DINOHeadV4(nn.Module):
         conv = []
         conv.append(
             nn.Conv2d(
-                2, 64, kernel_size=kernel_size, stride=1, padding=kernel_size // 2
+                2, 32, kernel_size=kernel_size, stride=1, padding=kernel_size // 2
             )
         )
         conv.append(nn.GELU())
@@ -607,7 +607,7 @@ class DINOHeadV4(nn.Module):
 
         self.last_layer = nn.utils.weight_norm(
             nn.Conv2d(
-                64, 1, kernel_size=kernel_size, stride=1, padding=kernel_size // 2
+                32, 1, kernel_size=kernel_size, stride=1, padding=kernel_size // 2
             )
         )
         self.last_layer.weight_g.data.fill_(1)
