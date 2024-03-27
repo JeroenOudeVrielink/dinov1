@@ -644,6 +644,114 @@ class DINOHeadV4(nn.Module):
         return x
 
 
+class DINOHeadV4_1(nn.Module):
+    def __init__(
+        self,
+        in_dim,
+        out_dim,
+        use_bn=False,
+        norm_last_layer=True,
+        nlayers=3,
+        hidden_dim=2048,
+        bottleneck_dim=256,
+        kernel_size=3,
+    ):
+        super().__init__()
+        conv_prime = []
+        conv_prime.append(
+            nn.Conv2d(4, 1, kernel_size=kernel_size, stride=1, padding=kernel_size // 2)
+        )
+        conv_prime.append(nn.GELU())
+        self.conv_prime = nn.Sequential(*conv_prime)
+
+        upsample = [
+            upsample.append(
+                nn.ConvTranspose2d(
+                    1,
+                    1,
+                    kernel_size=2,
+                    stride=2,
+                )
+            )
+        ]
+        upsample.append(nn.GELU())
+        self.upsample = nn.Sequential(*upsample)
+
+        conv = []
+        conv.append(
+            nn.Conv2d(1, 1, kernel_size=kernel_size, stride=1, padding=kernel_size // 2)
+        )
+        conv.append(nn.GELU())
+        self.conv = nn.Sequential(*conv)
+
+        self.apply(self._init_weights)
+
+        self.last_layer = nn.utils.weight_norm(
+            nn.Conv2d(2, 1, kernel_size=kernel_size, stride=1, padding=kernel_size // 2)
+        )
+        self.last_layer.weight_g.data.fill_(1)
+        if norm_last_layer:
+            self.last_layer.weight_g.requires_grad = False
+
+    def _init_weights(self, m):
+        if isinstance(m, nn.Linear):
+            trunc_normal_(m.weight, std=0.02)
+            if isinstance(m, nn.Linear) and m.bias is not None:
+                nn.init.constant_(m.bias, 0)
+
+    def forward(self, x):
+        # batch, 2, 1024, 7, 7
+        x = x.reshape(x.shape[0], 2, 1024, x.shape[2], x.shape[3])
+        x = x[:, 0]
+        # batch, 1, 1024, 7, 7
+        x_prime = x[:, 1]
+        # batch, 4, 256, 7, 7
+        x_prime = x_prime.reshape(
+            x_prime.shape[0], 4, 256, x_prime.shape[2], x_prime.shape[3]
+        )
+        # batch, 4, 16, 16, 49
+        x_prime = x_prime.reshape(
+            x_prime.shape[0],
+            x_prime.shape[1],
+            16,
+            16,
+            x_prime.shape[3] * x_prime.shape[4],
+        )
+        # 4 batch 49 16 16
+        x_prime = x_prime.permute(1, 0, 4, 2, 3)
+        img_1 = patches_to_grid(x_prime[0])
+        img_2 = patches_to_grid(x_prime[1])
+        img_3 = patches_to_grid(x_prime[2])
+        img_4 = patches_to_grid(x_prime[3])
+        # batch 4 112 112
+        x_prime = torch.cat(
+            (
+                img_1.unsqueeze(dim=1),
+                img_2.unsqueeze(dim=1),
+                img_3.unsqueeze(dim=1),
+                img_4.unsqueeze(dim=1),
+            ),
+            dim=1,
+        )
+        x_prime = self.conv_prime(x_prime)
+        x_prime = self.upsample(x_prime)
+
+        # batch, 1, 32, 32, 49
+        x = x.reshape(x.shape[0], x.shape[1], 32, 32, x.shape[3] * x.shape[4])
+        # 1 batch 49 32 32
+        x = x.permute(1, 0, 4, 2, 3)
+
+        x1 = x[0]
+        image1 = patches_to_grid(x1)
+        image1 = image1.unsqueeze(dim=1)
+        x = self.conv(x1)
+        x = self.last_layer(torch.cat((x, x_prime), dim=1))
+        x = x.squeeze(dim=1)
+        # batch 50176
+        x = torch.flatten(x, start_dim=-2)
+        return x
+
+
 class DINOHeadConvTranspose(nn.Module):
     def __init__(
         self,
