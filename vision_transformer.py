@@ -700,10 +700,10 @@ class DINOHeadV4_1(nn.Module):
 
     def forward(self, x):
         # batch, 2, 1024, 7, 7
-        x = x.reshape(x.shape[0], 2, 1024, x.shape[2], x.shape[3])
-        x = x[:, 0]
+        x = x.reshape(x.shape[0], 2, 1024, 7, 7)
+        x = x[:, 0, :, :, :]
         # batch, 1, 1024, 7, 7
-        x_prime = x[:, 1]
+        x_prime = x[:, 1, :, :, :]
         # batch, 4, 256, 7, 7
         x_prime = x_prime.reshape(x_prime.shape[0], 4, 256, 7, 7)
         # batch, 4, 16, 16, 49
