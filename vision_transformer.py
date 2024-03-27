@@ -741,7 +741,7 @@ class DINOHeadV4_1(nn.Module):
         x1 = x[0]
         image1 = patches_to_grid(x1)
         image1 = image1.unsqueeze(dim=1)
-        x = self.conv(x1)
+        x = self.conv(image1)
         x = self.last_layer(torch.cat((x, x_prime), dim=1))
         x = x.squeeze(dim=1)
         # batch 50176
