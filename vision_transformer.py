@@ -664,16 +664,15 @@ class DINOHeadV4_1(nn.Module):
         conv_prime.append(nn.GELU())
         self.conv_prime = nn.Sequential(*conv_prime)
 
-        upsample = [
-            upsample.append(
-                nn.ConvTranspose2d(
-                    1,
-                    1,
-                    kernel_size=2,
-                    stride=2,
-                )
+        upsample = []
+        upsample.append(
+            nn.ConvTranspose2d(
+                1,
+                1,
+                kernel_size=2,
+                stride=2,
             )
-        ]
+        )
         upsample.append(nn.GELU())
         self.upsample = nn.Sequential(*upsample)
 
