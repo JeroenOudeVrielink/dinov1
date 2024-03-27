@@ -597,14 +597,18 @@ class DINOHeadV4(nn.Module):
         super().__init__()
         conv = []
         conv.append(
-            nn.Conv2d(2, 1, kernel_size=kernel_size, stride=1, padding=kernel_size // 2)
+            nn.Conv2d(
+                2, 64, kernel_size=kernel_size, stride=1, padding=kernel_size // 2
+            )
         )
         conv.append(nn.GELU())
         self.conv = nn.Sequential(*conv)
         self.apply(self._init_weights)
 
         self.last_layer = nn.utils.weight_norm(
-            nn.Conv2d(1, 1, kernel_size=kernel_size, stride=1, padding=kernel_size // 2)
+            nn.Conv2d(
+                64, 1, kernel_size=kernel_size, stride=1, padding=kernel_size // 2
+            )
         )
         self.last_layer.weight_g.data.fill_(1)
         if norm_last_layer:
