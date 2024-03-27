@@ -705,16 +705,14 @@ class DINOHeadV4_1(nn.Module):
         # batch, 1, 1024, 7, 7
         x_prime = x[:, 1]
         # batch, 4, 256, 7, 7
-        x_prime = x_prime.reshape(
-            x_prime.shape[0], 4, 256, x_prime.shape[2], x_prime.shape[3]
-        )
+        x_prime = x_prime.reshape(x_prime.shape[0], 4, 256, 7, 7)
         # batch, 4, 16, 16, 49
         x_prime = x_prime.reshape(
             x_prime.shape[0],
-            x_prime.shape[1],
+            4,
             16,
             16,
-            x_prime.shape[3] * x_prime.shape[4],
+            49,
         )
         # 4 batch 49 16 16
         x_prime = x_prime.permute(1, 0, 4, 2, 3)
@@ -736,7 +734,7 @@ class DINOHeadV4_1(nn.Module):
         x_prime = self.upsample(x_prime)
 
         # batch, 1, 32, 32, 49
-        x = x.reshape(x.shape[0], x.shape[1], 32, 32, x.shape[3] * x.shape[4])
+        x = x.reshape(x.shape[0], 1, 32, 32, 49)
         # 1 batch 49 32 32
         x = x.permute(1, 0, 4, 2, 3)
 
