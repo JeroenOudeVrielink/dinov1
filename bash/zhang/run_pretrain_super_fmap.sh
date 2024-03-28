@@ -5,7 +5,7 @@
 cd ../..
 
 python main_dino.py \
---exp_name dinov1_bs128_ep61_super_fmap_v4 \
+--exp_name dinov1_bs128_ep61_super_fmap_v4_1 \
 --output_dir /dinov1_models \
 --data_path /AIML_rot_corrected \
 --arch resnet50 \
@@ -21,4 +21,5 @@ python main_dino.py \
 --saveckp_freq 20 \
 --epochs 61 \
 --use_conv_head True \
---out_dim 50176
+--out_dim 50176 \
+--norm_last_layer False

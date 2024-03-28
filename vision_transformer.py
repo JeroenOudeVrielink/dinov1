@@ -743,9 +743,9 @@ class DINOHeadV4_1(nn.Module):
         image1 = image1.unsqueeze(dim=1)
         x = self.conv(image1)
         x = torch.cat((x, x_prime), dim=1)
-        x = x.reshape(x.shape[0], x.shape[1], 224 * 224)
-        x = nn.functional.normalize(x, dim=-1, p=2)
-        x = x.reshape(x.shape[0], x.shape[1], 224, 224)
+        # x = x.reshape(x.shape[0], x.shape[1], 224 * 224)
+        # x = nn.functional.normalize(x, dim=-1, p=2)
+        # x = x.reshape(x.shape[0], x.shape[1], 224, 224)
         x = self.last_layer(x)
         x = x.squeeze(dim=1)
         # batch 50176
