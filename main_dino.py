@@ -413,6 +413,12 @@ def get_args_parser():
         type=int,
         help="kernel size of the convolutional head",
     )
+    parser.add_argument(
+        "--disable_centering",
+        default=False,
+        type=bool,
+        help="whether to disable teacher centering",
+    )
     return parser
 
 
@@ -560,6 +566,7 @@ def train_dino(args):
         args.teacher_temp,
         args.warmup_teacher_temp_epochs,
         args.epochs,
+        disable_centering=args.disable_centering,
     ).cuda()
 
     # ============ preparing optimizer ... ============
@@ -761,6 +768,7 @@ class DINOLoss(nn.Module):
         nepochs,
         student_temp=0.1,
         center_momentum=0.9,
+        disable_centering=False,
     ):
         super().__init__()
         self.student_temp = student_temp
@@ -777,6 +785,7 @@ class DINOLoss(nn.Module):
                 np.ones(nepochs - warmup_teacher_temp_epochs) * teacher_temp,
             )
         )
+        self.disable_centering = disable_centering
 
     def forward(self, student_output, teacher_output, epoch):
         """
@@ -787,7 +796,10 @@ class DINOLoss(nn.Module):
 
         # teacher centering and sharpening
         temp = self.teacher_temp_schedule[epoch]
-        teacher_out = F.softmax((teacher_output - self.center) / temp, dim=-1)
+        if self.disable_centering:
+            teacher_output = F.softmax(teacher_output / temp, dim=-1)
+        else:
+            teacher_out = F.softmax((teacher_output - self.center) / temp, dim=-1)
         teacher_out = teacher_out.detach().chunk(2)
 
         total_loss = 0

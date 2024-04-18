@@ -3,6 +3,8 @@
 *.pkl
 lightning_logs
 
+*.pth
+
 results/*/
 
 
