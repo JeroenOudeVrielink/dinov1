@@ -748,9 +748,9 @@ def train_one_epoch(
                     "wd": optimizer.param_groups[0]["weight_decay"],
                 }
             )
-            if epoch == 3:
-                torch.save(teacher_output, f"tensors/{it}_teacher_output.pth")
-                torch.save(student_output, f"tensors/{it}_student_output.pth")
+            # if epoch == 3:
+            #     torch.save(teacher_output, f"tensors/{it}_teacher_output.pth")
+            #     torch.save(student_output, f"tensors/{it}_student_output.pth")
     # gather the stats from all processes
     metric_logger.synchronize_between_processes()
     print("Averaged stats:", metric_logger)
