@@ -5,7 +5,7 @@
 cd ../..
 
 python main_dino.py \
---exp_name dinov1_b128_out_normal_ep300 \
+--exp_name dinov1_b128_out_dim4096_ep300 \
 --output_dir /dinov1_models \
 --data_path /AIML_rot_corrected \
 --arch resnet50 \
@@ -19,5 +19,5 @@ python main_dino.py \
 --num_workers 14 \
 --wandb_log_freq 100 \
 --saveckp_freq 10 \
---epochs 301
-# --out_dim 8192
+--epochs 301 \
+--out_dim 4096
