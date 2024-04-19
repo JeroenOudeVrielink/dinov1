@@ -5,8 +5,8 @@
 cd ../..
 
 python main_dino.py \
---exp_name dinov1_b128_out_dim2048_ep300 \
---output_dir /dinov1_models \
+--exp_name dinov1_b128_out_dim4096_ep300 \
+--output_dir /dinov1_models/dinov1_b128_out_dim4096_ep300_2024-04-18_04-40-38 \
 --data_path /AIML_rot_corrected \
 --arch resnet50 \
 --optimizer sgd \
@@ -20,4 +20,5 @@ python main_dino.py \
 --wandb_log_freq 100 \
 --saveckp_freq 10 \
 --epochs 301 \
---out_dim 2048
+--out_dim 4096 \
+--from_ckpt True
