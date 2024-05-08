@@ -18,6 +18,6 @@ python main_dino.py \
 --batch_size_per_gpu 128 \
 --num_workers 14 \
 --wandb_log_freq 100 \
---saveckp_freq 10 \
+--saveckp_freq 20 \
 --epochs 301 \
 --disable_centering True

@@ -797,7 +797,7 @@ class DINOLoss(nn.Module):
         # teacher centering and sharpening
         temp = self.teacher_temp_schedule[epoch]
         if self.disable_centering:
-            teacher_output = F.softmax(teacher_output / temp, dim=-1)
+            teacher_out = F.softmax(teacher_output / temp, dim=-1)
         else:
             teacher_out = F.softmax((teacher_output - self.center) / temp, dim=-1)
         teacher_out = teacher_out.detach().chunk(2)
