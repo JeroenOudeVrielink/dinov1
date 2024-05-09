@@ -434,8 +434,9 @@ def train_dino(args):
     cudnn.benchmark = True
 
     # ============ preparing data ... ============
-    if not args.custom_augmentation:
-        transform = DataAugmentationDINO(
+    if args.custom_augmentation:
+        print("Using CUSTOM data augmentation")
+        transform = CustomDataAugmentationDINO(
             args.global_crops_scale,
             args.local_crops_scale,
             args.local_crops_number,
@@ -450,7 +451,8 @@ def train_dino(args):
             args.p_random_rotation,
         )
     else:
-        transform = CustomDataAugmentationDINO(
+        print("Using standard data augmentation")
+        transform = DataAugmentationDINO(
             args.global_crops_scale,
             args.local_crops_scale,
             args.local_crops_number,

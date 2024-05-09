@@ -85,7 +85,7 @@ class EdgePreservingFilter(nn.Module):
         return smooth
 
 
-class DataAugmentationDINO(object):
+class CustomDataAugmentationDINO(object):
     def __init__(
         self,
         global_crops_scale,
@@ -199,7 +199,7 @@ class DataAugmentationDINO(object):
         return crops
 
 
-class CustomDataAugmentationDINO(object):
+class DataAugmentationDINO(object):
     def __init__(self, global_crops_scale, local_crops_scale, local_crops_number):
         flip_and_color_jitter = transforms.Compose(
             [

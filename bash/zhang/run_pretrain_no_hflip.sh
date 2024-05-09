@@ -5,7 +5,7 @@
 cd ../..
 
 python main_dino.py \
---exp_name dinov1_bs128_ep100_no_hflip\
+--exp_name dinov1_bs128_ep100_no_hflip \
 --output_dir /dinov1_models \
 --data_path /AIML_rot_corrected \
 --arch resnet50 \
@@ -20,6 +20,7 @@ python main_dino.py \
 --wandb_log_freq 100 \
 --saveckp_freq 20 \
 --epochs 101 \
+--custom_augmentation True \
 --p_horizontal_flip 0
 
 
@@ -42,4 +43,6 @@ python main_dino.py \
 --wandb_log_freq 100 \
 --saveckp_freq 20 \
 --epochs 101 \
+--custom_augmentation True \
+--p_horizontal_flip 0 \
 --p_random_rotation 0.5
