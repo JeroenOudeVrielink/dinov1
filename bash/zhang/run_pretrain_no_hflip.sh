@@ -2,6 +2,8 @@
 
 # Num workers was 14 (optimal) but caused OOM errors for RAM on ws7
 
+cd ../..
+
 python main_dino.py \
 --exp_name dinov1_bs128_ep100_no_hflip\
 --output_dir /dinov1_models \
@@ -21,7 +23,7 @@ python main_dino.py \
 --p_horizontal_flip 0
 
 
-pause 30s
+sleep 30s
 
 
 python main_dino.py \
