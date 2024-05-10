@@ -6,7 +6,7 @@ cd ../..
 
 python main_dino.py \
 --exp_name dinov1_bs128_ep100_no_hflip \
---output_dir /dinov1_models \
+--output_dir /dinov1_models/dinov1_bs128_ep100_no_hflip_2024-05-09_01-37-57 \
 --data_path /AIML_rot_corrected \
 --arch resnet50 \
 --optimizer sgd \
@@ -21,7 +21,8 @@ python main_dino.py \
 --saveckp_freq 20 \
 --epochs 101 \
 --custom_augmentation True \
---p_horizontal_flip 0
+--p_horizontal_flip 0 \
+--from_ckpt True
 
 
 sleep 30s
