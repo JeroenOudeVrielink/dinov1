@@ -5,7 +5,7 @@
 cd ../..
 
 python main_dino.py \
---exp_name dinov1_bs128_ep100_relu_rotation \
+--exp_name dinov1_bs128_ep100_relu_rotation_momentum_teacher_temp \
 --output_dir /dinov1_models \
 --data_path /AIML_rot_corrected \
 --arch resnet50 \
@@ -23,3 +23,6 @@ python main_dino.py \
 --activation "relu" \
 --custom_augmentation True \
 --p_random_rotation 0.5 \
+--momentum_teacher 0.9995 \
+--teacher_temp 0.6 \
+--warmup_teacher_temp_epochs 30
