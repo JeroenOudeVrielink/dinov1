@@ -24,5 +24,5 @@ python main_dino.py \
 --custom_augmentation True \
 --p_random_rotation 0.5 \
 --momentum_teacher 0.9995 \
---teacher_temp 0.6 \
+--teacher_temp 0.06 \
 --warmup_teacher_temp_epochs 30
