@@ -731,10 +731,10 @@ def train_one_epoch(
                 optimizer.step()
                 optimizer.zero_grad()
         else:
+            fp16_scaler.scale(loss).backward()
             if ((it + 1) % args.grad_accumulation_steps == 0) or (
                 it + 1 == len(data_loader)
             ):
-                fp16_scaler.scale(loss).backward()
                 if args.clip_grad:
                     fp16_scaler.unscale_(
                         optimizer
