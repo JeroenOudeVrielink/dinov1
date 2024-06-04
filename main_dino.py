@@ -419,6 +419,12 @@ def get_args_parser():
         type=bool,
         help="whether to disable teacher centering",
     )
+    parser.add_argument(
+        "--grad_accumulation_steps",
+        default=1,
+        type=int,
+        help="number of steps to accumulate gradients",
+    )
     return parser
 
 
@@ -590,7 +596,8 @@ def train_dino(args):
     lr_schedule = utils.cosine_scheduler(
         args.lr
         * (args.batch_size_per_gpu * utils.get_world_size())
-        / 256.0,  # linear scaling rule
+        / 256.0
+        * args.grad_accumulation_steps,  # linear scaling rule
         args.min_lr,
         args.epochs,
         len(data_loader),
@@ -705,19 +712,24 @@ def train_one_epoch(
             student_output = student(images)
             loss = dino_loss(student_output, teacher_output, epoch)
 
+        loss = loss / args.grad_accumulation_steps
         if not math.isfinite(loss.item()):
             print("Loss is {}, stopping training".format(loss.item()), force=True)
             sys.exit(1)
 
         # student update
-        optimizer.zero_grad()
+        # optimizer.zero_grad()
         param_norms = None
         if fp16_scaler is None:
             loss.backward()
             if args.clip_grad:
                 param_norms = utils.clip_gradients(student, args.clip_grad)
             utils.cancel_gradients_last_layer(epoch, student, args.freeze_last_layer)
-            optimizer.step()
+            if ((it + 1) % args.grad_accumulation_steps == 0) or (
+                it + 1 == len(data_loader)
+            ):
+                optimizer.step()
+                optimizer.zero_grad()
         else:
             fp16_scaler.scale(loss).backward()
             if args.clip_grad:
@@ -726,8 +738,12 @@ def train_one_epoch(
                 )  # unscale the gradients of optimizer's assigned params in-place
                 param_norms = utils.clip_gradients(student, args.clip_grad)
             utils.cancel_gradients_last_layer(epoch, student, args.freeze_last_layer)
-            fp16_scaler.step(optimizer)
-            fp16_scaler.update()
+            if ((it + 1) % args.grad_accumulation_steps == 0) or (
+                it + 1 == len(data_loader)
+            ):
+                fp16_scaler.step(optimizer)
+                fp16_scaler.update()
+                optimizer.zero_grad()
 
         # EMA update for the teacher
         with torch.no_grad():
