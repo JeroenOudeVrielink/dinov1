@@ -420,10 +420,10 @@ def get_args_parser():
         help="whether to disable teacher centering",
     )
     parser.add_argument(
-        "--grad_accumulation_steps",
-        default=1,
-        type=int,
-        help="number of steps to accumulate gradients",
+        "--annotations_file",
+        default="annotations/img_paths.csv",
+        type=str,
+        help="Path to the annotations file",
     )
     return parser
 
@@ -464,9 +464,7 @@ def train_dino(args):
             args.local_crops_number,
         )
     # dataset = datasets.ImageFolder(args.data_path, transform=transform)
-    dataset = AIMLDataset(
-        "annotations/img_paths.csv", args.data_path, transform=transform
-    )
+    dataset = AIMLDataset(args.annotations_file, args.data_path, transform=transform)
     sampler = torch.utils.data.DistributedSampler(dataset, shuffle=True)
     data_loader = torch.utils.data.DataLoader(
         dataset,
@@ -596,8 +594,7 @@ def train_dino(args):
     lr_schedule = utils.cosine_scheduler(
         args.lr
         * (args.batch_size_per_gpu * utils.get_world_size())
-        / 256.0
-        * args.grad_accumulation_steps,  # linear scaling rule
+        / 256.0,  # linear scaling rule
         args.min_lr,
         args.epochs,
         len(data_loader),
@@ -718,34 +715,24 @@ def train_one_epoch(
             sys.exit(1)
 
         # student update
-        # optimizer.zero_grad()
+        optimizer.zero_grad()
         param_norms = None
         if fp16_scaler is None:
             loss.backward()
             if args.clip_grad:
                 param_norms = utils.clip_gradients(student, args.clip_grad)
             utils.cancel_gradients_last_layer(epoch, student, args.freeze_last_layer)
-            if ((it + 1) % args.grad_accumulation_steps == 0) or (
-                it + 1 == len(data_loader)
-            ):
-                optimizer.step()
-                optimizer.zero_grad()
+            optimizer.step()
         else:
             fp16_scaler.scale(loss).backward()
-            if ((it + 1) % args.grad_accumulation_steps == 0) or (
-                it + 1 == len(data_loader)
-            ):
-                if args.clip_grad:
-                    fp16_scaler.unscale_(
-                        optimizer
-                    )  # unscale the gradients of optimizer's assigned params in-place
-                    param_norms = utils.clip_gradients(student, args.clip_grad)
-                utils.cancel_gradients_last_layer(
-                    epoch, student, args.freeze_last_layer
-                )
-                fp16_scaler.step(optimizer)
-                fp16_scaler.update()
-                optimizer.zero_grad()
+            if args.clip_grad:
+                fp16_scaler.unscale_(
+                    optimizer
+                )  # unscale the gradients of optimizer's assigned params in-place
+                param_norms = utils.clip_gradients(student, args.clip_grad)
+            utils.cancel_gradients_last_layer(epoch, student, args.freeze_last_layer)
+            fp16_scaler.step(optimizer)
+            fp16_scaler.update()
 
         # EMA update for the teacher
         with torch.no_grad():
