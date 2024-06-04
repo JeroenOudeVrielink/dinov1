@@ -709,7 +709,6 @@ def train_one_epoch(
             student_output = student(images)
             loss = dino_loss(student_output, teacher_output, epoch)
 
-        loss = loss / args.grad_accumulation_steps
         if not math.isfinite(loss.item()):
             print("Loss is {}, stopping training".format(loss.item()), force=True)
             sys.exit(1)
