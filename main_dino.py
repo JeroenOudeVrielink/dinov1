@@ -731,16 +731,18 @@ def train_one_epoch(
                 optimizer.step()
                 optimizer.zero_grad()
         else:
-            fp16_scaler.scale(loss).backward()
-            if args.clip_grad:
-                fp16_scaler.unscale_(
-                    optimizer
-                )  # unscale the gradients of optimizer's assigned params in-place
-                param_norms = utils.clip_gradients(student, args.clip_grad)
-            utils.cancel_gradients_last_layer(epoch, student, args.freeze_last_layer)
             if ((it + 1) % args.grad_accumulation_steps == 0) or (
                 it + 1 == len(data_loader)
             ):
+                fp16_scaler.scale(loss).backward()
+                if args.clip_grad:
+                    fp16_scaler.unscale_(
+                        optimizer
+                    )  # unscale the gradients of optimizer's assigned params in-place
+                    param_norms = utils.clip_gradients(student, args.clip_grad)
+                utils.cancel_gradients_last_layer(
+                    epoch, student, args.freeze_last_layer
+                )
                 fp16_scaler.step(optimizer)
                 fp16_scaler.update()
                 optimizer.zero_grad()
