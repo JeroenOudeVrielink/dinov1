@@ -5,7 +5,7 @@
 cd ../..
 
 python main_dino.py \
---exp_name dinov1_bs128_ep100_relu_rotation_momentum_batch_norm \
+--exp_name dinov1_bs128_ep1000_relu_rotation_momentum_batch_norm \
 --output_dir /dinov1_models \
 --data_path /AIML_rot_corrected \
 --arch resnet50 \
@@ -19,7 +19,7 @@ python main_dino.py \
 --num_workers 14 \
 --wandb_log_freq 100 \
 --saveckp_freq 20 \
---epochs 101 \
+--epochs 1001 \
 --activation "relu" \
 --custom_augmentation True \
 --p_random_rotation 0.5 \
